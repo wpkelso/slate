@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Slate
+Comment="Dumb as rocks text editor"
+Exec=io.github.wpkelso.slate %U
+Keywords=Text;Editor;"Text Editor";
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GTK;

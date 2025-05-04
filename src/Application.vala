@@ -10,7 +10,7 @@ public class Application : Gtk.Application {
 
     public Application () {
         Object (
-            application_id: "io.elementary.text",
+            application_id: "io.github.wpkelso.slate",
             flags: ApplicationFlags.DEFAULT_FLAGS
         );
     }

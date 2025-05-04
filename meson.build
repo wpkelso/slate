@@ -1,5 +1,5 @@
 project(
-    'io.elementary.slate',
+    'io.github.wpkelso.slate',
     ['vala', 'c'],
     version: '0.0.1',
     license: 'GPL-3.0'
@@ -29,9 +29,12 @@ deps = [
     dependency('gio-2.0'),
 ]
 
-e = executable(
-    'io.elementary.slate',
+executable(
+    meson.project_name(),
     sources,
     dependencies: deps,
     install: true
+
 )
+
+subdir('data')
