@@ -92,7 +92,7 @@ public class Application : Gtk.Application {
         });
 
         save_as_button.clicked.connect (() => {
-            var save_dialog = new Gtk.FileDialog ();
+            var save_dialog = new Gtk.FileDialog () { initial_name = file_name};
 
             save_dialog.save.begin (window, null, (obj, res) => {
                 try {
