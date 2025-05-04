@@ -1,5 +1,5 @@
 project(
-    'io.elementary.text',
+    'io.elementary.slate',
     ['vala', 'c'],
     version: '0.0.1',
     license: 'GPL-3.0'
@@ -25,11 +25,12 @@ subdir('src')
 
 deps = [
     dependency('granite-7', version: '>= 7.7.0'),
-    dependency('gtk4')
+    dependency('gtk4'),
+    dependency('gio-2.0'),
 ]
 
 e = executable(
-    'io.elementary.text',
+    'io.elementary.slate',
     sources,
     dependencies: deps,
     install: true
