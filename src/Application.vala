@@ -108,23 +108,6 @@ public class Application : Gtk.Application {
                         )
                     );
 
-                    /* if (file.query_exists ()) {
-                        dostream = new DataOutputStream (
-                            file.replace (
-                                null,
-                                false,
-                                GLib.FileCreateFlags.REPLACE_DESTINATION
-                            )
-                        );
-                    } else {
-                        print ("The file does not exist");
-                            dostream = new DataOutputStream (
-                            file.create (
-                                GLib.FileCreateFlags.NONE
-                            )
-                        ); 
-                    } */
-
                     var contents = buf.text;
                     dostream.put_string (contents);
                 } catch (Error err) {
