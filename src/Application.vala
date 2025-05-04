@@ -20,11 +20,20 @@ public class Application : Gtk.Application {
 
     protected override void activate () {
 
+        var open_button = new Gtk.Button.from_icon_name ("document-open");
+        var save_button = new Gtk.Button.from_icon_name ("document-save");
+        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
+        var actions_box = new Granite.Box (HORIZONTAL, HALF);
+        actions_box.append(open_button);
+        actions_box.append(save_button);
+        actions_box.append(save_as_button);
+
         var header = new Gtk.HeaderBar () {
             show_title_buttons = false
         };
         header.add_css_class (Granite.STYLE_CLASS_FLAT);
         header.pack_start (new Gtk.WindowControls (Gtk.PackType.START));
+        header.pack_start (actions_box);
         header.pack_end (new Gtk.WindowControls (Gtk.PackType.END));
 
         var view = new Gtk.TextView () {
