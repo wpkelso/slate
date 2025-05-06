@@ -103,7 +103,7 @@ public class Application : Gtk.Application {
                     dostream = new DataOutputStream (
                         file.replace (
                             null,
-                            false,
+                            true,
                             GLib.FileCreateFlags.REPLACE_DESTINATION
                         )
                     );
@@ -115,6 +115,41 @@ public class Application : Gtk.Application {
                 }
             });
         });
+
+        var interval = 500; // ms
+        uint debounce_timer_id = 0;
+
+        buf.changed.connect (() => {
+            debug ("The buffer has been modified, starting the debounce timer");
+            
+            if (debounce_timer_id != 0) {
+                GLib.Source.remove (debounce_timer_id);
+            }
+
+            debounce_timer_id = Timeout.add (interval, () => {
+                debounce_timer_id = 0;
+                try {
+                    if (file.query_exists ()) {
+                        debug ("Attempting to save the buffer to disk..");
+                        DataOutputStream dostream;
+                        dostream = new DataOutputStream (
+                            file.replace (
+                                null,
+                                true,
+                                GLib.FileCreateFlags.REPLACE_DESTINATION
+                            )
+                        );
+
+                        var contents = buf.text;
+                        dostream.put_string (contents);
+                    }
+                } catch (Error err) {
+                    warning("Failed to save file: %s", err.message);
+                } 
+                return GLib.Source.REMOVE;
+            });
+        });
+
 
         bind_property ("file_name", window, "title");
         file_name = "New Document";
