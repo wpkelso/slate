@@ -23,13 +23,13 @@ public class Application : Gtk.Application {
 
 
     protected override void activate () {
-        var open_button = new Gtk.Button.from_icon_name ("document-open");
         var new_button = new Gtk.Button.from_icon_name ("document-new");
+        var open_button = new Gtk.Button.from_icon_name ("document-open");
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
 
         var actions_box = new Granite.Box (HORIZONTAL, HALF);
-        actions_box.append(open_button);
         actions_box.append(new_button);
+        actions_box.append(open_button);
         actions_box.append(save_as_button);
 
 
