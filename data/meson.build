@@ -21,6 +21,6 @@ install_data(
 
 install_data(
     'slate.metainfo.xml.in',
-    output: meson.project_name() + '.metainfo.xml',
+    rename: meson.project_name() + '.metainfo.xml',
     install_dir: join_paths(get_option('datadir'), 'metainfo'),
 )

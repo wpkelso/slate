@@ -2,8 +2,9 @@
 Name=Slate
 Comment="Dumb as rocks text editor"
 Exec=io.github.wpkelso.slate %U
+Icon=io.github.wpkelso.slate
 Keywords=Text;Editor;"Text Editor";
 Terminal=false
 Type=Application
 StartupNotify=true
-Categories=GTK;
+Categories=Utility;GTK;Office;Development;TextTools;TextEditor;
