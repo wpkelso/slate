@@ -58,6 +58,8 @@ public class AppWindow : Gtk.Window {
 
         debug ("Connecting signals");
 
+        // Signal callbacks are heavily derived from similar operations in
+        // elementary/code
         open_button.clicked.connect (() => {
             var open_dialog = new Gtk.FileDialog ();
 
