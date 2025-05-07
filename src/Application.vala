@@ -20,7 +20,7 @@ public class Application : Gtk.Application {
             var new_window = new AppWindow () {file_name = "New Document"};
 
             add_window (new_window);
-            new_window.show ();
+            new_window.present ();
         });
         this.add_action (new_document_action);
     }
@@ -28,12 +28,25 @@ public class Application : Gtk.Application {
     public override void startup () {
         Granite.init ();
         base.startup ();
+
+        var granite_settings = Granite.Settings.get_default ();
+        var gtk_settings = Gtk.Settings.get_default ();
+
+        gtk_settings.gtk_application_prefer_dark_theme = (
+            granite_settings.prefers_color_scheme == DARK
+        );
+
+        granite_settings.notify["prefers-color-scheme"].connect (() => {
+            gtk_settings.gtk_application_prefer_dark_theme = (
+                granite_settings.prefers_color_scheme == DARK
+            );
+        });
     }
 
     protected override void activate () {
         var window = new AppWindow () { file_name = "New Document"};
         add_window (window);
-        window.show ();
+        window.present ();
 
     }
 
@@ -45,7 +58,7 @@ public class Application : Gtk.Application {
 
             debug ("Adding new window to application");
             add_window (window);
-            window.show ();
+            window.present ();
         }
     }
 
