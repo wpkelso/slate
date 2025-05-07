@@ -3,6 +3,8 @@ public class AppWindow : Gtk.Window {
     private Gtk.TextBuffer buf;
     public string file_name { get; set; }
 
+    public signal void request_new ();
+
     public AppWindow () {
         debug ("Constructing GUI");
 
@@ -55,6 +57,11 @@ public class AppWindow : Gtk.Window {
 
         debug ("Connecting signals");
 
+        new_button.clicked.connect (() => {
+            debug ("Requesting new window");
+            request_new ();
+        });
+
         open_button.clicked.connect (() => {
             var open_dialog = new Gtk.FileDialog ();
 
@@ -75,18 +82,7 @@ public class AppWindow : Gtk.Window {
                 try {
                     file = save_dialog.save.end (res);
                     file_name = file.get_basename ();
-
-                    DataOutputStream dostream;
-                    dostream = new DataOutputStream (
-                        file.replace (
-                            null,
-                            true,
-                            GLib.FileCreateFlags.REPLACE_DESTINATION
-                        )
-                    );
-
-                    var contents = buf.text;
-                    dostream.put_string (contents);
+                    save_file (file);
                 } catch (Error err) {
                     warning ("Failed to save file: %s", err.message);
                 }
@@ -105,24 +101,9 @@ public class AppWindow : Gtk.Window {
 
             debounce_timer_id = Timeout.add (interval, () => {
                 debounce_timer_id = 0;
-                try {
-                    if (file.query_exists ()) {
-                        debug ("Attempting to save the buffer to disk..");
-                        DataOutputStream dostream;
-                        dostream = new DataOutputStream (
-                            file.replace (
-                                null,
-                                true,
-                                GLib.FileCreateFlags.REPLACE_DESTINATION
-                            )
-                        );
-
-                        var contents = buf.text;
-                        dostream.put_string (contents);
-                    }
-                } catch (Error err) {
-                    warning("Failed to save file: %s", err.message);
-                } 
+                if (file.query_exists ()) {
+                    save_file ();
+                }
                 return GLib.Source.REMOVE;
             });
         });
@@ -146,5 +127,36 @@ public class AppWindow : Gtk.Window {
             warning ("Couldn't open file: %s", err.message);
         }
 
+    }
+
+    public void save_file (File file = this.file) {
+        try {
+            debug ("Attempting to save the buffer to disk..");
+            DataOutputStream dostream;
+            dostream = new DataOutputStream (
+                    file.replace (
+                        null,
+                        true,
+                        GLib.FileCreateFlags.REPLACE_DESTINATION
+                        )
+                    );
+
+            var contents = buf.text;
+            dostream.put_string (contents);
+        } catch (Error err) {
+            warning ("Couldn't save file: %s", err.message);
+        }
+    }
+}
+
+public class AppWindowFactory {
+    public AppWindow create_with_file (File file) {
+        var window = new AppWindow ();
+        window.open_file (file);
+        return window;
+    }
+
+    public AppWindow create () {
+        return new AppWindow ();
     }
 }
