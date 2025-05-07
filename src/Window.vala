@@ -113,6 +113,19 @@ public class AppWindow : Gtk.Window {
         file_name = "unknown"; // Initialize file_name so we don't crash when we bind it
         bind_property ("file_name", this, "title");
         debug ("Success!");
+
+        this.close_request.connect (() => {
+            save_file ();
+
+            var backup = File.new_for_path (this.file.get_path () + "~");
+            try {
+                backup.delete ();
+            } catch (Error err) {
+                warning ("Couldn't delete the backup file: %s", err.message);
+            }
+
+            return false;
+        });
     }
 
     public void open_file (File file = this.file) {
