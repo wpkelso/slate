@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2025 William Kelso <wpkelso@posteo.net>
+ */
+
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
