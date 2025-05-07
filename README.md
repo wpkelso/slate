@@ -1,4 +1,4 @@
-![icon](data/icons/64.svg)
+![An icon consisting of a black square with a thick brown border and a white grid](data/icons/128.svg)
 
 # Slate 
 
