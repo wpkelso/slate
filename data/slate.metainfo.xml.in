@@ -35,6 +35,8 @@
     <value key="x-appcenter-color-primary">#485a6c</value>
   </custom>
 
+  <content_rating type="oars-1.1" />
+
   <provides>
       <binary>io.github.wpkelso.slate</binary>
   </provides>
@@ -54,8 +56,6 @@
   <developer id="io.github.wpkelso">
     <name>William Kelso</name>
   </developer>
-  <project_group>elementary</project_group>
-  <update_contact>wpkelso+contact@posteo.net</update_contact>
 
   <releases>
     <release version="1.0.0" date="2025-05-07" urgency="medium">
