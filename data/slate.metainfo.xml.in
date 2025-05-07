@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2025 William Kelso <wpkelso+contact@posteo.net> -->
+<component type="desktop-application">
+  <id>io.github.wpkelso.slate</id>
+  <launchable type="desktop-id">io.github.wpkelso.slate.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+
+  <name>Mail</name>
+  <summary>A "dumb as rocks" text editor</summary>
+  <description>
+    <p>
+        Slate is a lightweight plain text editor that edits text files and nothing more.
+    </p>
+    <ul>
+      <li>Make new files!</li>
+      <li>Open files!</li>
+      <li>Edit files!</li>
+      <li>Files get autosaved!</li>
+      <li>Save files under new names!</li>
+      <li>Close files!</li>
+    </ul>
+  </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/wpkelso/slate/1.0.0/data/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+
+  <branding>
+    <color type="primary">#485a6c</color>
+  </branding>
+  <custom>
+    <value key="x-appcenter-color-primary">#485a6c</value>
+  </custom>
+
+  <provides>
+      <binary>io.github.wpkelso.slate</binary>
+  </provides>
+
+  <recommends>
+    <display_length compare="ge">800</display_length>
+  </recommends>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <url type="homepage">https://github.com/wpkelso/slate</url>
+  <url type="bugtracker">https://github.com/wpkelso/slate/issues</url>
+
+  <developer id="io.github.wpkelso">
+    <name>William Kelso</name>
+  </developer>
+  <project_group>elementary</project_group>
+  <update_contact>wpkelso+contact@posteo.net</update_contact>
+
+  <releases>
+    <release version="1.0.0" date="2025-05-07" urgency="medium">
+      <description>
+        <p>Initial release!</p>
+      </description>
+    </release>
+
+  </releases>
+</component>
