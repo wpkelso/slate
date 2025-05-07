@@ -4,30 +4,30 @@
  */
 
 public class Application : Gtk.Application {
-    private AppWindowFactory window_factory;
-    private List<AppWindow> window_list;
 
     public Application () {
         Object (
             application_id: "io.github.wpkelso.slate",
             flags: ApplicationFlags.DEFAULT_FLAGS | ApplicationFlags.HANDLES_OPEN
         );
+
+        SimpleAction new_document_action = new SimpleAction (
+            "new-document",
+            null
+        );
+        new_document_action.activate.connect (() => {
+            debug ("Creating new window as requested");
+            var new_window = new AppWindow () {file_name = "New Document"};
+
+            add_window (new_window);
+            new_window.show ();
+        });
+        this.add_action (new_document_action);
     }
 
     public override void startup () {
         Granite.init ();
         base.startup ();
-
-        window_list = new List<AppWindow> ();
-
-        this.window_added.connect (() => {
-            update_new_listeners ();
-        });
-
-        this.window_removed.connect (() => {
-            update_new_listeners ();
-        });
-
     }
 
     protected override void activate () {
@@ -46,26 +46,6 @@ public class Application : Gtk.Application {
             debug ("Adding new window to application");
             add_window (window);
             window.show ();
-        }
-    }
-
-    private void new_request_callback () {
-        debug ("Creating new window as requested");
-        var new_window = window_factory.create ();
-        new_window.file_name = "New Document";
-
-        window_list.append (new_window);
-        add_window (new_window);
-        new_window.show ();
-    }
-
-    private void update_new_listeners () {
-        debug ("Updating new window request listeners");
-        foreach (var window in window_list) {
-            window.request_new.connect (() => {
-                debug("Running window callback");
-                new_request_callback ();
-            });
         }
     }
 

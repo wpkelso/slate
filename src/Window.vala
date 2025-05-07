@@ -3,12 +3,11 @@ public class AppWindow : Gtk.Window {
     private Gtk.TextBuffer buf;
     public string file_name { get; set; }
 
-    public signal void request_new ();
-
     public AppWindow () {
         debug ("Constructing GUI");
 
         var new_button = new Gtk.Button.from_icon_name ("document-new");
+        new_button.action_name = "app.new-document";
         var open_button = new Gtk.Button.from_icon_name ("document-open");
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
 
@@ -56,11 +55,6 @@ public class AppWindow : Gtk.Window {
         titlebar = new Gtk.Grid () { visible = false };
 
         debug ("Connecting signals");
-
-        new_button.clicked.connect (() => {
-            debug ("Requesting new window");
-            request_new ();
-        });
 
         open_button.clicked.connect (() => {
             var open_dialog = new Gtk.FileDialog ();
@@ -162,14 +156,3 @@ public class AppWindow : Gtk.Window {
     }
 }
 
-public class AppWindowFactory {
-    public AppWindow create_with_file (File file) {
-        var window = new AppWindow ();
-        window.open_file (file);
-        return window;
-    }
-
-    public AppWindow create () {
-        return new AppWindow ();
-    }
-}
