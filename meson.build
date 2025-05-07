@@ -8,7 +8,6 @@ project(
 # these are Meson Modules
 gnome = import('gnome')
 i18n = import('i18n')
-sass = find_program('sassc')
 
 add_global_arguments(
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
@@ -24,7 +23,7 @@ sources = files()
 subdir('src')
 
 deps = [
-    dependency('granite-7', version: '>= 7.7.0'),
+    dependency('granite-7'),
     dependency('gtk4'),
     dependency('gio-2.0'),
 ]

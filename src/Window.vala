@@ -11,7 +11,8 @@ public class AppWindow : Gtk.Window {
         var open_button = new Gtk.Button.from_icon_name ("document-open");
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
 
-        var actions_box = new Granite.Box (HORIZONTAL, HALF);
+        // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
+        var actions_box = new Gtk.Box (HORIZONTAL, 8);
         actions_box.append(new_button);
         actions_box.append(open_button);
         actions_box.append(save_as_button);
@@ -44,7 +45,8 @@ public class AppWindow : Gtk.Window {
             vexpand = true,
         };
         
-        var app_box = new Granite.Box (VERTICAL);
+        // TODO: use Granite.Box (VERTICAL, NONE) when granite-7.7.0 is released
+        var app_box = new Gtk.Box (VERTICAL, 0);
         app_box.append (header);
         app_box.append (scrolled_view);
             
@@ -83,6 +85,20 @@ public class AppWindow : Gtk.Window {
             });
         });
 
+        this.close_request.connect (() => {
+            save_file ();
+
+            var backup = File.new_for_path (this.file.get_path () + "~");
+            try {
+                backup.delete ();
+            } catch (Error err) {
+                warning ("Couldn't delete the backup file: %s", err.message);
+            }
+
+            return false;
+        });
+
+        // Add a debounce so we aren't writing the entire buffer every character input
         var interval = 500; // ms
         uint debounce_timer_id = 0;
 
@@ -108,18 +124,6 @@ public class AppWindow : Gtk.Window {
         bind_property ("file_name", this, "title");
         debug ("Success!");
 
-        this.close_request.connect (() => {
-            save_file ();
-
-            var backup = File.new_for_path (this.file.get_path () + "~");
-            try {
-                backup.delete ();
-            } catch (Error err) {
-                warning ("Couldn't delete the backup file: %s", err.message);
-            }
-
-            return false;
-        });
     }
 
     public void open_file (File file = this.file) {

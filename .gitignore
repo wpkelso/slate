@@ -1,2 +1,10 @@
-*~
 build
+builddir
+.atom-dbg.cson
+.vscode
+*~
+.goutputstream-*
+*.css
+
+# subprojects/*/
+.flatpak-builder
