@@ -45,7 +45,7 @@
   </provides>
 
   <recommends>
-    <display_length compare="ge">800</display_length>
+    <display_length compare="ge">300</display_length>
   </recommends>
   <supports>
     <control>pointing</control>
@@ -61,6 +61,18 @@
   </developer>
 
   <releases>
+    <release version="1.0.1" date="2025-05-08" urgency="medium">
+      <description>
+        <p>Various small fixes for AppCenter release</p>
+        <ul>
+          <li>Remove copy-paste error from metainfo</li>
+          <li>Update screenshots</li>
+          <li>Remove unecessary containers for the headerbar</li>
+          <li>Remove xdg-documents sandbox permission</li>
+        </ul>
+      </description>
+    </release>
+
     <release version="1.0.0" date="2025-05-07" urgency="medium">
       <description>
         <p>Initial release!</p>
