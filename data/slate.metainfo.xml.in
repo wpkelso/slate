@@ -23,8 +23,11 @@
   </description>
 
   <screenshots>
-    <screenshot type="default">
-      <image>https://raw.githubusercontent.com/wpkelso/slate/1.0.0/data/screenshot.png</image>
+    <screenshot type="default" environment="pantheon">
+      <image>https://raw.githubusercontent.com/wpkelso/slate/1.0.1/data/screenshot-light.png</image>
+    </screenshot>
+    <screenshot environment="pantheon:dark">
+      <image>https://raw.githubusercontent.com/wpkelso/slate/1.0.1/data/screenshot-dark.png</image>
     </screenshot>
   </screenshots>
 
