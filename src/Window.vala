@@ -88,13 +88,6 @@ public class AppWindow : Gtk.Window {
         this.close_request.connect (() => {
             save_file ();
 
-            var backup = File.new_for_path (this.file.get_path () + "~");
-            try {
-                backup.delete ();
-            } catch (Error err) {
-                warning ("Couldn't delete the backup file: %s", err.message);
-            }
-
             return false;
         });
 
@@ -147,7 +140,7 @@ public class AppWindow : Gtk.Window {
             dostream = new DataOutputStream (
                     file.replace (
                         null,
-                        true,
+                        false,
                         GLib.FileCreateFlags.REPLACE_DESTINATION
                         )
                     );
