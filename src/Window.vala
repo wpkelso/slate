@@ -11,8 +11,9 @@ public class AppWindow : Gtk.Window {
     public AppWindow () {
         debug ("Constructing GUI");
 
-        var new_button = new Gtk.Button.from_icon_name ("document-new");
-        new_button.action_name = "app.new-document";
+        var new_button = new Gtk.Button.from_icon_name ("document-new") {
+            action_name = "app.new-document"
+        };
         var open_button = new Gtk.Button.from_icon_name ("document-open");
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
 
@@ -24,12 +25,10 @@ public class AppWindow : Gtk.Window {
 
 
         var header = new Gtk.HeaderBar () {
-            show_title_buttons = false
+            show_title_buttons = true
         };
         header.add_css_class (Granite.STYLE_CLASS_FLAT);
-        header.pack_start (new Gtk.WindowControls (Gtk.PackType.START));
         header.pack_start (actions_box);
-        header.pack_end (new Gtk.WindowControls (Gtk.PackType.END));
 
         var text_view = new Gtk.TextView () {
             cursor_visible = true,
@@ -49,17 +48,11 @@ public class AppWindow : Gtk.Window {
             hexpand = true,
             vexpand = true,
         };
-        
-        // TODO: use Granite.Box (VERTICAL, NONE) when granite-7.7.0 is released
-        var app_box = new Gtk.Box (VERTICAL, 0);
-        app_box.append (header);
-        app_box.append (scrolled_view);
-            
 
-        child = app_box;
+        child = scrolled_view;
         default_height = 400;
         default_width = 300;
-        titlebar = new Gtk.Grid () { visible = false };
+        titlebar = header;
 
         debug ("Connecting signals");
 
@@ -111,7 +104,7 @@ public class AppWindow : Gtk.Window {
 
         buf.changed.connect (() => {
             debug ("The buffer has been modified, starting the debounce timer");
-            
+
             if (debounce_timer_id != 0) {
                 GLib.Source.remove (debounce_timer_id);
             }
