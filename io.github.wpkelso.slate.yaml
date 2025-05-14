@@ -1,6 +1,6 @@
 id: io.github.wpkelso.slate
 runtime: io.elementary.Platform
-runtime-version: '8.1'
+runtime-version: "8.1"
 sdk: io.elementary.Sdk
 command: io.github.wpkelso.slate
 

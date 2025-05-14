@@ -6,7 +6,8 @@
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
-    public string file_name { get; set; }
+    public string file_name { get; set; default = "unknown"; }
+    public bool is_new { get; set; default = false; }
 
     public AppWindow () {
         debug ("Constructing GUI");
@@ -14,14 +15,16 @@ public class AppWindow : Gtk.Window {
         var new_button = new Gtk.Button.from_icon_name ("document-new") {
             action_name = "app.new-document"
         };
-        var open_button = new Gtk.Button.from_icon_name ("document-open");
+        var open_button = new Gtk.Button.from_icon_name ("document-open") {
+            action_name = "app.open-document"
+        };
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
 
         // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
         var actions_box = new Gtk.Box (HORIZONTAL, 8);
-        actions_box.append(new_button);
-        actions_box.append(open_button);
-        actions_box.append(save_as_button);
+        actions_box.append (new_button);
+        actions_box.append (open_button);
+        actions_box.append (save_as_button);
 
 
         var header = new Gtk.HeaderBar () {
@@ -58,26 +61,14 @@ public class AppWindow : Gtk.Window {
 
         // Signal callbacks are heavily derived from similar operations in
         // elementary/code
-        open_button.clicked.connect (() => {
-            var open_dialog = new Gtk.FileDialog ();
-
-            open_dialog.open.begin (this, null, (obj, res) => {
-                try {
-                    file = open_dialog.open.end (res);
-                    open_file (file);
-                } catch (Error err) {
-                    warning ("Failed to select file to open: %s", err.message);
-                }
-            });
-        });
-
         save_as_button.clicked.connect (() => {
-            var save_dialog = new Gtk.FileDialog () { initial_name = file_name};
+            var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
 
             save_dialog.save.begin (this, null, (obj, res) => {
                 try {
                     file = save_dialog.save.end (res);
                     file_name = file.get_basename ();
+                    if (is_new) { is_new = false; }
                     save_file (file);
                 } catch (Error err) {
                     warning ("Failed to save file: %s", err.message);
@@ -87,6 +78,17 @@ public class AppWindow : Gtk.Window {
 
         this.close_request.connect (() => {
             save_file ();
+
+            if (is_new) {
+                try {
+                    this.file.delete ();
+                } catch (Error err) {
+                    warning (
+                             "The persistent file couldn't be deleted: %s",
+                             err.message
+                    );
+                }
+            }
 
             return false;
         });
@@ -113,24 +115,32 @@ public class AppWindow : Gtk.Window {
 
         debug ("Binding window title to file_name");
 
-        file_name = "unknown"; // Initialize file_name so we don't crash when we bind it
         bind_property ("file_name", this, "title");
-        debug ("Success!");
 
+        debug ("Success!");
     }
 
     public void open_file (File file = this.file) {
         this.file = file;
-        debug ("Attempting to open file %s", file.get_basename ());
-        try {
-            file_name = file.get_basename ();
-            var distream = new DataInputStream (file.read (null));
-            var contents = distream.read_upto ("", -1, null);
-            buf.set_text (contents);
-        } catch (Error err) {
-            warning ("Couldn't open file: %s", err.message);
-        }
 
+        if (this.is_new) {
+            try {
+                file.create (GLib.FileCreateFlags.REPLACE_DESTINATION);
+                this.file_name = file.get_basename ();
+            } catch (Error err) {
+                warning ("Couldn't create file: %s", err.message);
+            }
+        } else {
+            debug ("Attempting to open file %s", file.get_basename ());
+            try {
+                this.file_name = file.get_basename ();
+                var distream = new DataInputStream (file.read (null));
+                var contents = distream.read_upto ("", -1, null);
+                buf.set_text (contents);
+            } catch (Error err) {
+                warning ("Couldn't open file: %s", err.message);
+            }
+        }
     }
 
     public void save_file (File file = this.file) {
@@ -138,12 +148,12 @@ public class AppWindow : Gtk.Window {
             debug ("Attempting to save the buffer to disk..");
             DataOutputStream dostream;
             dostream = new DataOutputStream (
-                    file.replace (
-                        null,
-                        false,
-                        GLib.FileCreateFlags.REPLACE_DESTINATION
-                        )
-                    );
+                                             file.replace (
+                                                           null,
+                                                           false,
+                                                           GLib.FileCreateFlags.REPLACE_DESTINATION
+                                             )
+            );
 
             var contents = buf.text;
             dostream.put_string (contents);
@@ -152,4 +162,3 @@ public class AppWindow : Gtk.Window {
         }
     }
 }
-

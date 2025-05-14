@@ -3,26 +3,18 @@
  * SPDX-FileCopyrightText: 2025 William Kelso <wpkelso@posteo.net>
  */
 
+
+const string APP_ID = "io.github.wpkelso.slate";
+
 public class Application : Gtk.Application {
+
+    uint created_documents = 1;
 
     public Application () {
         Object (
-            application_id: "io.github.wpkelso.slate",
-            flags: ApplicationFlags.DEFAULT_FLAGS | ApplicationFlags.HANDLES_OPEN
+                application_id: APP_ID,
+                flags: ApplicationFlags.DEFAULT_FLAGS | ApplicationFlags.HANDLES_OPEN
         );
-
-        SimpleAction new_document_action = new SimpleAction (
-            "new-document",
-            null
-        );
-        new_document_action.activate.connect (() => {
-            debug ("Creating new window as requested");
-            var new_window = new AppWindow () {file_name = "New Document"};
-
-            add_window (new_window);
-            new_window.present ();
-        });
-        this.add_action (new_document_action);
     }
 
     public override void startup () {
@@ -33,21 +25,77 @@ public class Application : Gtk.Application {
         var gtk_settings = Gtk.Settings.get_default ();
 
         gtk_settings.gtk_application_prefer_dark_theme = (
-            granite_settings.prefers_color_scheme == DARK
+                                                          granite_settings.prefers_color_scheme == DARK
         );
 
         granite_settings.notify["prefers-color-scheme"].connect (() => {
             gtk_settings.gtk_application_prefer_dark_theme = (
-                granite_settings.prefers_color_scheme == DARK
+                                                              granite_settings.prefers_color_scheme == DARK
             );
         });
+
+        SimpleAction new_document_action = new SimpleAction (
+                                                             "new-document",
+                                                             null
+        );
+        new_document_action.activate.connect (() => {
+            var name = get_new_document_name ();
+            var path = Path.build_filename (Environment.get_user_data_dir (), name);
+            var file = File.new_for_path (path);
+            debug (
+                   "Document is unsaved, creating an save location at: %s",
+                   path
+            );
+
+            var new_window = new AppWindow () {
+                is_new = true,
+            };
+            new_window.open_file (file);
+
+            debug ("Created new window with name %s", name);
+            add_window (new_window);
+            new_window.present ();
+        });
+        this.add_action (new_document_action);
+
+        SimpleAction open_document_action = new SimpleAction (
+                                                              "open-document",
+                                                              null
+        );
+        open_document_action.activate.connect (() => {
+            var open_dialog = new Gtk.FileDialog ();
+            var new_window = new AppWindow ();
+
+            open_dialog.open.begin (new_window, null, (obj, res) => {
+                try {
+                    var file = open_dialog.open.end (res);
+                    new_window.open_file (file);
+                    add_window (new_window);
+                    new_window.present ();
+                } catch (Error err) {
+                    warning ("Failed to select file to open: %s", err.message);
+                }
+            });
+        });
+        this.add_action (open_document_action);
     }
 
     protected override void activate () {
-        var window = new AppWindow () { file_name = "New Document"};
-        add_window (window);
-        window.present ();
+        var name = get_new_document_name ();
+        var path = Path.build_filename (Environment.get_user_data_dir (), name);
+        var file = File.new_for_path (path);
+        debug (
+               "Document is unsaved, creating an save location at: %s",
+               path
+        );
 
+        var new_window = new AppWindow () {
+            is_new = true,
+        };
+        new_window.open_file (file);
+
+        add_window (new_window);
+        new_window.present ();
     }
 
     protected override void open (File[] files, string hint) {
@@ -60,6 +108,22 @@ public class Application : Gtk.Application {
             add_window (window);
             window.present ();
         }
+    }
+
+    string get_new_document_name () {
+        var name = "New Document";
+        if (created_documents > 1) {
+            name = name + " " + created_documents.to_string ();
+        }
+
+        debug (
+               "New document name is: %s",
+               name
+        );
+
+        this.created_documents++;
+
+        return name;
     }
 
     public static int main (string[] args) {
