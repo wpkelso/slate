@@ -1,7 +1,7 @@
 <p align="center">
   <img alt="An icon consisting of a black square with a thick brown border and a white grid" src="data/icons/128.svg" />
   <h1>Slate</h1>
-  <h3>The text editor thats dumb as rocks</h3>
+  <h3>The text editor that's dumb as rocks</h3>
 </p>
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
