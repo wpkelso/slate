@@ -1,0 +1,25 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2025-06-09 16:27+0200\n"
+"Project-Id-Version: io.github.wpkelso.slate\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: src/Window.vala:21
+msgid "New Document"
+msgstr "Speichern"
+
+#: src/Window.vala:28
+msgid "Open file"
+msgstr "Öffnen"
+
+#: src/Window.vala:33
+msgid "Save as"
+msgstr "Speichern unter"
