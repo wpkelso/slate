@@ -12,13 +12,28 @@ public class AppWindow : Gtk.Window {
     public AppWindow () {
         debug ("Constructing GUI");
 
+        Intl.setlocale ();
+
         var new_button = new Gtk.Button.from_icon_name ("document-new") {
-            action_name = "app.new-document"
+            action_name = "app.new-document",
+            tooltip_markup = Granite.markup_accel_tooltip (
+                    {""},
+                    _("New Document")
+            )
         };
         var open_button = new Gtk.Button.from_icon_name ("document-open") {
-            action_name = "app.open-document"
+            action_name = "app.open-document",
+            tooltip_markup = Granite.markup_accel_tooltip (
+                    {""},
+                    _("Open file")
+            )
         };
-        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as");
+        var save_as_button = new Gtk.Button.from_icon_name ("document-save-as") {
+            tooltip_markup = Granite.markup_accel_tooltip (
+                    {""},
+                    _("Save as")
+            )
+        };
 
         // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
         var actions_box = new Gtk.Box (HORIZONTAL, 8);

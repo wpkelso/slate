@@ -1,0 +1,86 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2025-06-09 16:27+0200\n"
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: data/io.github.wpkelso.slate.desktop.in:3
+#: data/slate.metainfo.xml.in:9
+msgid "Slate"
+msgstr "Slate"
+
+#: data/io.github.wpkelso.slate.desktop.in:4
+msgid "\"Dumb as rocks text editor\""
+msgstr "\"Dumm als Stein Texteditor\""
+
+#: data/io.github.wpkelso.slate.desktop.in:7
+msgid "Text;Editor;\"Text Editor\";"
+msgstr "Text;Editor; \"Text Editor\";"
+
+#: data/slate.metainfo.xml.in:10
+msgid "A \"dumb as rocks\" text editor"
+msgstr "Ein \"Dumm als Stein\" Texteditor"
+
+#: data/slate.metainfo.xml.in:12
+msgid "Slate is a lightweight plain text editor that edits text files and nothing more."
+msgstr "Slate ist ein leichtgewichtiger einfacher Texteditor, mit dem sich Textdateien bearbeiten lassen, mehr nicht."
+
+#: data/slate.metainfo.xml.in:16
+msgid "Make new files!"
+msgstr "Erstellen Sie neue Dateien!"
+
+#: data/slate.metainfo.xml.in:17
+msgid "Open files!"
+msgstr "Dateien öffnen!"
+
+#: data/slate.metainfo.xml.in:18
+msgid "Edit files!"
+msgstr "Dateien bearbeiten!"
+
+#: data/slate.metainfo.xml.in:19
+msgid "Files get autosaved!"
+msgstr "Dateien werden automatisch gespeichert!"
+
+#: data/slate.metainfo.xml.in:20
+msgid "Save files under new names!"
+msgstr "Speichern Sie Dateien unter neuen Namen!"
+
+#: data/slate.metainfo.xml.in:21
+msgid "Close files!"
+msgstr "Dateien schließen!"
+
+#: data/slate.metainfo.xml.in:60
+msgid "William Kelso"
+msgstr "William Kelso"
+
+#: data/slate.metainfo.xml.in:66
+msgid "Various small fixes for AppCenter release"
+msgstr "Verschiedene kleine Korrekturen für AppCenter Release"
+
+#: data/slate.metainfo.xml.in:68
+msgid "Remove copy-paste error from metainfo"
+msgstr "Copy-Paste-Fehler aus Metainfo entfernen"
+
+#: data/slate.metainfo.xml.in:69
+msgid "Update screenshots"
+msgstr "Bildschirmfotos aktualisieren"
+
+#: data/slate.metainfo.xml.in:70
+msgid "Remove unecessary containers for the headerbar"
+msgstr "Unnötige Container für die Kopfleiste entfernen"
+
+#: data/slate.metainfo.xml.in:71
+msgid "Remove xdg-documents sandbox permission"
+msgstr "Sandbox-Berechtigung für xdg-documents entfernen"
+
+#: data/slate.metainfo.xml.in:78
+msgid "Initial release!"
+msgstr "Erste Veröffentlichung!"
