@@ -36,7 +36,7 @@ jobs:
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6.5
         with:
           bundle: slate.flatpak
-          manifest-path: io.github.wpkelso.slate.yml
+          manifest-path: io.github.wpkelso.slate.yaml
           run-tests: true
           repository-name: appcenter
           repository-url: https://flatpak.elementary.io/repo.flatpakrepo
