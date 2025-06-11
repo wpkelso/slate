@@ -109,6 +109,10 @@ public class AppWindow : Gtk.Window {
     }
 
     public void save_file (File file = this.file) {
+        if (Environment.get_user_data_dir () in this.file.get_path ()) {
+            Application.check_if_datadir();
+        }
+
         try {
             debug ("Attempting to save the buffer to disk..");
             DataOutputStream dostream;

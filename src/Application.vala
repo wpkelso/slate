@@ -116,7 +116,7 @@ public class Application : Gtk.Application {
         return name;
     }
 
-    public void check_if_datadir () {
+    public static void check_if_datadir () {
         debug ("do we have a data directory?");
         var data_directory = File.new_for_path (Environment.get_user_data_dir ());
         try {
