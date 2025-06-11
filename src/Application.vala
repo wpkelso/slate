@@ -94,7 +94,7 @@ public class Application : Gtk.Application {
 
         // Conveniently, if there is no unsaved document, we just get NULL
         // Which AppWindow will process as a new unsaved doc
-        foreach (unsaved_document in pile_unsaved_documents.read_name () ) {
+        foreach (var unsaved_document in pile_unsaved_documents.read_name () ) {
 
             debug (
                 "Document is unsaved, creating an save location at: %s",
