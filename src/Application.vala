@@ -108,16 +108,6 @@ public class Application : Gtk.Application {
             add_window (new_window);
             new_window.present ();
         }
-
-
-        if (args[1] != null) {
-            
-            open_at = File.new_for_path(args[1]);
-            var new_window = new AppWindow (open_at);
-
-            add_window (new_window);
-            new_window.present ();
-        }
     }
 
     protected override void open (File[] files, string hint) {
