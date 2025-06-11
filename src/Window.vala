@@ -7,7 +7,6 @@ public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
     public string file_name { get; set; }
-    public bool is_new { get; set; default = false; }
 
     // Add a debounce so we aren't writing the entire buffer every character input
     public int interval = 500; // ms
@@ -21,20 +20,20 @@ public class AppWindow : Gtk.Window {
         var new_button = new Gtk.Button.from_icon_name ("document-new") {
             action_name = "app.new-document",
             tooltip_markup = Granite.markup_accel_tooltip (
-                    {""},
+                    {"<Control>n"},
                     _("New Document")
             )
         };
         var open_button = new Gtk.Button.from_icon_name ("document-open") {
             action_name = "app.open-document",
             tooltip_markup = Granite.markup_accel_tooltip (
-                    {""},
+                    {"<Control>o"},
                     _("Open file")
             )
         };
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as") {
             tooltip_markup = Granite.markup_accel_tooltip (
-                    {""},
+                    {"<Control>s"},
                     _("Save as")
             )
         };
@@ -134,11 +133,7 @@ public class AppWindow : Gtk.Window {
         debug ("Save event!");
         var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
         File oldfile = this.file;
-        bool delete_after = false;
-
-        if (Environment.get_user_data_dir () in this.file.get_path ()) {
-            delete_after = true;
-        }
+        bool delete_after = (Environment.get_user_data_dir () in this.file.get_path ());
 
         save_dialog.save.begin (this, null, (obj, res) => {
             try {

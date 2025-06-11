@@ -39,19 +39,30 @@ public class Application : Gtk.Application {
             );
         });
 
-        SimpleAction new_document_action = new SimpleAction (
-                                                             "new-document",
-                                                             null
-        );
+        SimpleAction new_document_action = new SimpleAction ("new-document",null);
+        set_accels_for_action ("app.new-document", {"<Control>n"});
         new_document_action.activate.connect (on_new_document);
         this.add_action (new_document_action);
 
-        SimpleAction open_document_action = new SimpleAction (
-                                                              "open-document",
-                                                              null
-        );
+        SimpleAction open_document_action = new SimpleAction ("open-document",null);
+        set_accels_for_action ("app.open-document", {"<Control>o"});
         open_document_action.activate.connect (on_open_document);
         this.add_action (open_document_action);
+
+        //SimpleAction saveas_action = new SimpleAction ("saveas", null);
+        //set_accels_for_action ("app.saveas", {"<Control>s"});
+        //add_action (saveas);
+        //saveas_action.activate.connect (this.on_save_as);
+
+        SimpleAction quit_action = new SimpleAction ("quit", null);
+        set_accels_for_action ("app.quit", {"<Control>q"});
+        add_action (quit_action);
+        quit_action.activate.connect (() => {
+            foreach (var window in this.get_windows ()) {
+                window.close ();
+            }
+            this.quit ();
+        });
     }
 
     protected override void activate () {
@@ -140,7 +151,7 @@ public class Application : Gtk.Application {
         new_window.present ();
     }
 
-    public void on_open_document() {
+    public void on_open_document () {
         var open_dialog = new Gtk.FileDialog ();
         open_dialog.open.begin (this.active_window, null, (obj, res) => {
             try {
@@ -150,5 +161,9 @@ public class Application : Gtk.Application {
                 warning ("Failed to select file to open: %s", err.message);
             }
         });
+    }
+
+    public void on_save_as () {
+        (AppWindow)this.active_window.on_save_as ();
     }
 }
