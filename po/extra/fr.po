@@ -27,7 +27,7 @@ msgstr "« Éditeur de texte stupide comme la pierre »"
 
 #: data/io.github.wpkelso.slate.desktop.in:7
 msgid "Text;Editor;\"Text Editor\";"
-msgstr "Text;Editor;\"Text Editor\";éditeur;texte"
+msgstr "Éditeur;Texte;\"Éditeur de texte\""
 
 #: data/slate.metainfo.xml.in:10
 msgid "A \"dumb as rocks\" text editor"
