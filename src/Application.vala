@@ -8,7 +8,7 @@ const string APP_ID = "io.github.wpkelso.slate";
 
 public class Application : Gtk.Application {
 
-    uint created_documents = 1;
+    public static uint created_documents = 1;
 
     public Application () {
         Object (
@@ -43,6 +43,7 @@ public class Application : Gtk.Application {
                                                              "new-document",
                                                              null
         );
+
         new_document_action.activate.connect (() => {
             var name = get_new_document_name ();
             var path = Path.build_filename (Environment.get_user_data_dir (), name);
@@ -86,21 +87,37 @@ public class Application : Gtk.Application {
     }
 
     protected override void activate () {
-        var name = get_new_document_name ();
-        var path = Path.build_filename (Environment.get_user_data_dir (), name);
-        var file = File.new_for_path (path);
-        debug (
-               "Document is unsaved, creating an save location at: %s",
-               path
-        );
 
-        var new_window = new AppWindow () {
-            is_new = true,
-        };
-        new_window.open_file (file);
+        Slate.Utils.check_if_datadir ();
+        saved_unsaved_documents = Environment.get_user_data_dir ();
+        pile_unsaved_documents = saved_unsaved_documents.open ();
 
-        add_window (new_window);
-        new_window.present ();
+        // Conveniently, if there is no unsaved document, we just get NULL
+        // Which AppWindow will process as a new unsaved doc
+        foreach (unsaved_document in pile_unsaved_documents.read_name() ) {
+
+            debug (
+                "Document is unsaved, creating an save location at: %s",
+                path
+            );
+
+            var new_window = new AppWindow (unsaved_document) {
+                is_new = true,
+            };
+
+            add_window (new_window);
+            new_window.present ();
+        }
+
+
+        if (args[1] != null) {
+            
+            open_at = File.new_for_path(args[1]);
+            var new_window = new AppWindow (open_at);
+
+            add_window (new_window);
+            new_window.present ();
+        }
     }
 
     protected override void open (File[] files, string hint) {
@@ -113,22 +130,6 @@ public class Application : Gtk.Application {
             add_window (window);
             window.present ();
         }
-    }
-
-    string get_new_document_name () {
-        var name = "New Document";
-        if (created_documents > 1) {
-            name = name + " " + created_documents.to_string ();
-        }
-
-        debug (
-               "New document name is: %s",
-               name
-        );
-
-        this.created_documents++;
-
-        return name;
     }
 
     public static int main (string[] args) {

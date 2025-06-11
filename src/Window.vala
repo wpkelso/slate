@@ -6,14 +6,14 @@
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
-    public string file_name { get; set; default = "unknown"; }
-    public bool is_new { get; set; default = false; }
+    public string? file_name { get; set; default = null; }
+    public bool is_new;
 
     // Add a debounce so we aren't writing the entire buffer every character input
     public int interval = 500; // ms
     public uint debounce_timer_id = 0;
 
-    public AppWindow () {
+    public AppWindow (File? document) {
         debug ("Constructing GUI");
 
         Intl.setlocale ();
@@ -80,7 +80,7 @@ public class AppWindow : Gtk.Window {
 
         // Signal callbacks are heavily derived from similar operations in
         // elementary/code
-        save_as_button.clicked.connect (on_save);
+        save_as_button.clicked.connect (on_save_as);
         this.close_request.connect (on_close);
         buf.changed.connect (on_buffer_changed);
 
@@ -89,22 +89,35 @@ public class AppWindow : Gtk.Window {
         bind_property ("file_name", this, "title");
 
         debug ("Success!");
+
+    
+        if (document == null) {
+            new_empty_doc ();
+        }
+
+        open_file (document);
     }
 
 
     /* ---------------- FILE OPERATIONS ---------------- */
-    public void open_file (File file = this.file) {
-        this.file = file;
-
-        if (this.is_new) {
-            try {
-                file.create (GLib.FileCreateFlags.REPLACE_DESTINATION);
-                this.file_name = file.get_basename ();
-            } catch (Error err) {
-                warning ("Couldn't create file: %s", err.message);
-            }
-        } else {
+    public void open_file (File? file = this.file) {
             debug ("Attempting to open file %s", file.get_basename ());
+
+        if (file = null) {
+            is_new = true;
+
+            this.file_name = Slate.Utils.get_new_document_name ();
+            this.file = File.new_for_path (Environment.get_user_data_dir () + '/' + name);
+
+            try {
+                this.file.create (GLib.FileCreateFlags.REPLACE_DESTINATION);
+            } catch (Error err) {
+                    warning ("Couldn't create file: %s", err.message);
+            }
+
+        } else {
+            this.file = file;
+
             try {
                 this.file_name = file.get_basename ();
                 var distream = new DataInputStream (file.read (null));
@@ -117,6 +130,13 @@ public class AppWindow : Gtk.Window {
     }
 
     public void save_file (File file = this.file) {
+
+        // We have to always check if nothing happened to datadir
+        // This way if the user deleted in the meantime everything, we still can save unsaved docs
+        if (is_new) {
+            Slate.Utils.check_if_datadir;
+        }
+
         try {
             debug ("Attempting to save the buffer to disk..");
             DataOutputStream dostream;
@@ -135,9 +155,8 @@ public class AppWindow : Gtk.Window {
         }
     }
 
-
     /* ---------------- HANDLERS ---------------- */
-    public void on_save () {
+    public void on_save_as () {
         debug ("Save event!");
         var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
 
@@ -147,7 +166,7 @@ public class AppWindow : Gtk.Window {
                 file_name = file.get_basename ();
                 if (is_new) { is_new = false; }
                 save_file (file);
-                
+
             } catch (Error err) {
                     warning ("Failed to save file: %s", err.message);
             }
