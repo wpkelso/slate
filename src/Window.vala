@@ -90,14 +90,8 @@ public class AppWindow : Gtk.Window {
 
         debug ("Success!");
 
-    
-        if (document == null) {
-            new_empty_doc ();
-        }
-
         open_file (document);
     }
-
 
     /* ---------------- FILE OPERATIONS ---------------- */
     public void open_file (File? file = this.file) {
@@ -134,7 +128,7 @@ public class AppWindow : Gtk.Window {
         // We have to always check if nothing happened to datadir
         // This way if the user deleted in the meantime everything, we still can save unsaved docs
         if (is_new) {
-            Slate.Utils.check_if_datadir;
+            Slate.Utils.check_if_datadir ();
         }
 
         try {
