@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the extra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-09 16:27+0200\n"
+"PO-Revision-Date: 2025-06-11 HO:MI+ZONE\n"
+"Last-Translator: Teamcons - teamcons.carrd.co\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/io.github.wpkelso.slate.desktop.in:3 data/slate.metainfo.xml.in:9
+msgid "Slate"
+msgstr "Slate"
+
+#: data/io.github.wpkelso.slate.desktop.in:4
+msgid "\"Dumb as rocks text editor\""
+msgstr "Editor de texto «tonto como una piedra»"
+
+#: data/io.github.wpkelso.slate.desktop.in:7
+msgid "Text;Editor;\"Text Editor\";"
+msgstr "Texto;Editor;\"Editor de texto\";"
+
+#: data/slate.metainfo.xml.in:10
+msgid "A \"dumb as rocks\" text editor"
+msgstr "Un editor de texto «tonto como una piedra»"
+
+#: data/slate.metainfo.xml.in:12
+msgid ""
+"Slate is a lightweight plain text editor that edits text files and nothing "
+"more."
+msgstr ""
+"Slate es un editor de texto sencillo y ligero que edita archivos de texto y nada "
+"más."
+
+#: data/slate.metainfo.xml.in:16
+msgid "Make new files!"
+msgstr "¡Crear archivos nuevos!"
+
+#: data/slate.metainfo.xml.in:17
+msgid "Open files!"
+msgstr "¡Abrir archivos!"
+
+#: data/slate.metainfo.xml.in:18
+msgid "Edit files!"
+msgstr "¡Editar archivos!"
+
+#: data/slate.metainfo.xml.in:19
+msgid "Files get autosaved!"
+msgstr "¡Los archivos se guardan automáticamente!"
+
+#: data/slate.metainfo.xml.in:20
+msgid "Save files under new names!"
+msgstr "¡Guarde los archivos con nuevos nombres!"
+
+#: data/slate.metainfo.xml.in:21
+msgid "Close files!"
+msgstr "¡Cierre los archivos!"
+
+#: data/slate.metainfo.xml.in:60
+msgid "William Kelso"
+msgstr "William Kelso"
+
+#: data/slate.metainfo.xml.in:66
+msgid "Various small fixes for AppCenter release"
+msgstr "Varias pequeñas correcciones para el lanzamiento de AppCenter"
+
+#: data/slate.metainfo.xml.in:68
+msgid "Remove copy-paste error from metainfo"
+msgstr "Eliminar error de copiar y pegar de metainfo"
+
+#: data/slate.metainfo.xml.in:69
+msgid "Update screenshots"
+msgstr "Actualizar capturas de pantalla"
+
+#: data/slate.metainfo.xml.in:70
+msgid "Remove unecessary containers for the headerbar"
+msgstr "Eliminar contenedores innecesarios para la barra de encabezado"
+
+#: data/slate.metainfo.xml.in:71
+msgid "Remove xdg-documents sandbox permission"
+msgstr "Eliminar permiso de arena xdg-documents"
+
+#: data/slate.metainfo.xml.in:78
+msgid "Initial release!"
+msgstr "¡Versión inicial!"
