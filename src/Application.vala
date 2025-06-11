@@ -74,7 +74,7 @@ public class Application : Gtk.Application {
             var pile_unsaved_documents = Dir.open (datadir);
 
             string? unsaved_doc = null;
-		    while ((unsaved_doc = pile_unsaved_documents.read_name ()) != null) {
+            while ((unsaved_doc = pile_unsaved_documents.read_name ()) != null) {
                 print (unsaved_doc);
                 string path = Path.build_filename (datadir, unsaved_doc);
                 File file = File.new_for_path (path);
@@ -90,7 +90,7 @@ public class Application : Gtk.Application {
         if (created_documents == 1) {
             on_new_document ();
         }
-        
+
     }
 
     protected override void open (File[] files, string hint) {
@@ -106,7 +106,7 @@ public class Application : Gtk.Application {
             name = name + " " + created_documents.to_string ();
         }
 
-        debug ("New document name is: %s",name);
+        debug ("New document name is: %s", name);
 
         created_documents++;
 
