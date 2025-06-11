@@ -49,17 +49,20 @@ public class Application : Gtk.Application {
         open_document_action.activate.connect (on_open_document);
         this.add_action (open_document_action);
 
-        //SimpleAction saveas_action = new SimpleAction ("saveas", null);
-        //set_accels_for_action ("app.saveas", {"<Control>s"});
-        //add_action (saveas);
-        //saveas_action.activate.connect (this.on_save_as);
+        //TODO: Vala complains about the method not existing
+        /*SimpleAction saveas_action = new SimpleAction ("saveas", null);
+        set_accels_for_action ("app.saveas", {"<Control>s"});
+        add_action (saveas);
+        saveas_action.activate.connect (() => {
+            this.get_active_window ().on_save_as ();
+        });*/
 
         SimpleAction quit_action = new SimpleAction ("quit", null);
         set_accels_for_action ("app.quit", {"<Control>q"});
         add_action (quit_action);
         quit_action.activate.connect (() => {
             foreach (var window in this.get_windows ()) {
-                window.close ();
+                window.close_request ();
             }
             this.quit ();
         });
