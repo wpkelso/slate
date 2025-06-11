@@ -9,3 +9,4 @@ builddir
 # subprojects/*/
 .flatpak-builder
 .vscode
+.flatpak/meson.sh

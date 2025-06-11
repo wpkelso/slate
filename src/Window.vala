@@ -6,14 +6,14 @@
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
-    public string? file_name { get; set; default = null; }
-    public bool is_new;
+    public string file_name { get; set; }
+    public bool is_new { get; set; default = false; }
 
     // Add a debounce so we aren't writing the entire buffer every character input
     public int interval = 500; // ms
     public uint debounce_timer_id = 0;
 
-    public AppWindow (File? document) {
+    public AppWindow (File file) {
         debug ("Constructing GUI");
 
         Intl.setlocale ();
@@ -63,6 +63,7 @@ public class AppWindow : Gtk.Window {
             wrap_mode = WORD_CHAR,
         };
         buf = text_view.buffer;
+        buf.text = "";
 
 
         var scrolled_view = new Gtk.ScrolledWindow () {
@@ -90,47 +91,25 @@ public class AppWindow : Gtk.Window {
 
         debug ("Success!");
 
-        open_file (document);
+        open_file (file);
     }
 
+
     /* ---------------- FILE OPERATIONS ---------------- */
-    public void open_file (File? file = this.file) {
-            debug ("Attempting to open file %s", file.get_basename ());
-
-        if (file = null) {
-            is_new = true;
-
-            this.file_name = Slate.Utils.get_new_document_name ();
-            this.file = File.new_for_path (Environment.get_user_data_dir () + '/' + name);
-
-            try {
-                this.file.create (GLib.FileCreateFlags.REPLACE_DESTINATION);
-            } catch (Error err) {
-                    warning ("Couldn't create file: %s", err.message);
-            }
-
-        } else {
-            this.file = file;
-
-            try {
-                this.file_name = file.get_basename ();
-                var distream = new DataInputStream (file.read (null));
-                var contents = distream.read_upto ("", -1, null);
-                buf.set_text (contents);
-            } catch (Error err) {
-                warning ("Couldn't open file: %s", err.message);
-            }
+    public void open_file (File file = this.file) {
+        this.file = file;
+        debug ("Attempting to open file %s", file.get_basename ());
+        try {
+            this.file_name = file.get_basename ();
+            var distream = new DataInputStream (file.read (null));
+            var contents = distream.read_upto ("", -1, null);
+            buf.set_text (contents);
+        } catch (Error err) {
+            warning ("Couldn't open file: %s", err.message);
         }
     }
 
     public void save_file (File file = this.file) {
-
-        // We have to always check if nothing happened to datadir
-        // This way if the user deleted in the meantime everything, we still can save unsaved docs
-        if (is_new) {
-            Slate.Utils.check_if_datadir ();
-        }
-
         try {
             debug ("Attempting to save the buffer to disk..");
             DataOutputStream dostream;
@@ -149,22 +128,36 @@ public class AppWindow : Gtk.Window {
         }
     }
 
+
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
         debug ("Save event!");
         var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
+        File oldfile = this.file;
+        bool delete_after = false;
+
+        if (Environment.get_user_data_dir () in this.file.get_path ()) {
+            delete_after = true;
+        }
 
         save_dialog.save.begin (this, null, (obj, res) => {
             try {
+
+
                 file = save_dialog.save.end (res);
                 file_name = file.get_basename ();
-                if (is_new) { is_new = false; }
                 save_file (file);
 
+                if ((delete_after) && (oldfile != file)) {
+                    oldfile.delete ();
+                }
+ 
             } catch (Error err) {
                     warning ("Failed to save file: %s", err.message);
             }
         });
+
+
     }
 
     public void on_buffer_changed () {
@@ -184,20 +177,24 @@ public class AppWindow : Gtk.Window {
 
     }
 
-    public void on_close () {
+    public bool on_close () {
         debug ("Close event!");
-        save_file ();
 
-        if (is_new) {
+        bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+
+        // We want to delete empty unsaved documents
+        if ((is_unsaved_doc) && (buf.text == "")) {
+
             try {
                 this.file.delete ();
             } catch (Error err) {
-                warning (
-                    "The persistent file couldn't be deleted: %s",
-                    err.message
-                        );
+                    warning ("Failed to delete empty temp file: %s", err.message);
             }
+
+        } else {
+            save_file ();
         }
+
         return false;
     }
 }
