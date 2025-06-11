@@ -146,7 +146,7 @@ public class AppWindow : Gtk.Window {
                 if ((delete_after) && (oldfile != file)) {
                     oldfile.delete ();
                 }
- 
+
             } catch (Error err) {
                     warning ("Failed to save file: %s", err.message);
             }
