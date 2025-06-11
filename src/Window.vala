@@ -9,6 +9,10 @@ public class AppWindow : Gtk.Window {
     public string file_name { get; set; default = "unknown"; }
     public bool is_new { get; set; default = false; }
 
+    // Add a debounce so we aren't writing the entire buffer every character input
+    public int interval = 500; // ms
+    public uint debounce_timer_id = 0;
+
     public AppWindow () {
         debug ("Constructing GUI");
 
@@ -76,57 +80,9 @@ public class AppWindow : Gtk.Window {
 
         // Signal callbacks are heavily derived from similar operations in
         // elementary/code
-        save_as_button.clicked.connect (() => {
-            var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
-
-            save_dialog.save.begin (this, null, (obj, res) => {
-                try {
-                    file = save_dialog.save.end (res);
-                    file_name = file.get_basename ();
-                    if (is_new) { is_new = false; }
-                    save_file (file);
-                } catch (Error err) {
-                    warning ("Failed to save file: %s", err.message);
-                }
-            });
-        });
-
-        this.close_request.connect (() => {
-            save_file ();
-
-            if (is_new) {
-                try {
-                    this.file.delete ();
-                } catch (Error err) {
-                    warning (
-                             "The persistent file couldn't be deleted: %s",
-                             err.message
-                    );
-                }
-            }
-
-            return false;
-        });
-
-        // Add a debounce so we aren't writing the entire buffer every character input
-        var interval = 500; // ms
-        uint debounce_timer_id = 0;
-
-        buf.changed.connect (() => {
-            debug ("The buffer has been modified, starting the debounce timer");
-
-            if (debounce_timer_id != 0) {
-                GLib.Source.remove (debounce_timer_id);
-            }
-
-            debounce_timer_id = Timeout.add (interval, () => {
-                debounce_timer_id = 0;
-                if (file.query_exists ()) {
-                    save_file ();
-                }
-                return GLib.Source.REMOVE;
-            });
-        });
+        save_as_button.clicked.connect (on_save);
+        this.close_request.connect (on_close);
+        buf.changed.connect (on_buffer_changed);
 
         debug ("Binding window title to file_name");
 
@@ -135,6 +91,8 @@ public class AppWindow : Gtk.Window {
         debug ("Success!");
     }
 
+
+    /* ---------------- FILE OPERATIONS ---------------- */
     public void open_file (File file = this.file) {
         this.file = file;
 
@@ -175,5 +133,58 @@ public class AppWindow : Gtk.Window {
         } catch (Error err) {
             warning ("Couldn't save file: %s", err.message);
         }
+    }
+
+
+    /* ---------------- HANDLERS ---------------- */
+    public void on_save () {
+        debug ("Save event!");
+        var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
+
+        save_dialog.save.begin (this, null, (obj, res) => {
+            try {
+                file = save_dialog.save.end (res);
+                file_name = file.get_basename ();
+                if (is_new) { is_new = false; }
+                save_file (file);
+                
+            } catch (Error err) {
+                    warning ("Failed to save file: %s", err.message);
+            }
+        });
+    }
+
+    public void on_buffer_changed () {
+        debug ("The buffer has been modified, starting the debounce timer");
+
+        if (debounce_timer_id != 0) {
+            GLib.Source.remove (debounce_timer_id);
+        }
+
+        debounce_timer_id = Timeout.add (interval, () => {
+            debounce_timer_id = 0;
+            if (file.query_exists ()) {
+                save_file ();
+            }
+            return GLib.Source.REMOVE;
+        });
+
+    }
+
+    public void on_close () {
+        debug ("Close event!");
+        save_file ();
+
+        if (is_new) {
+            try {
+                this.file.delete ();
+            } catch (Error err) {
+                warning (
+                    "The persistent file couldn't be deleted: %s",
+                    err.message
+                        );
+            }
+        }
+        return false;
     }
 }
