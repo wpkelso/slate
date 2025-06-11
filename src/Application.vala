@@ -162,8 +162,4 @@ public class Application : Gtk.Application {
             }
         });
     }
-
-    public void on_save_as () {
-        (AppWindow)this.active_window.on_save_as ();
-    }
 }
