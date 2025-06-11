@@ -7,7 +7,7 @@
 namespace Slate.Utils {
 
     public string get_new_document_name () {
-        var name = _"New Document";
+        var name = _("New Document");
 
         if (created_documents > 1) {
             name = name + " " + created_documents.to_string ();
