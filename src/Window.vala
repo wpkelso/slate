@@ -7,6 +7,7 @@ public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
     private Gtk.EditableLabel header_label;
+    public string file_name;
 
     // Add a debounce so we aren't writing the entire buffer every character input
     public int interval = 500; // ms
@@ -100,8 +101,8 @@ public class AppWindow : Gtk.Window {
         // Window title, and header label, are file name
         // We dont want to rename files with no save location yet
         // 
-        file.bind_property ("basename", this, "title");
-        file.bind_property ("basename", header_label, "text");
+        file.bind_property ("file_name", this, "title");
+        file.bind_property ("file_name", header_label, "text");
         bind_property ("is_unsaved_doc", header_label, "sensitive", Glib.BindingFlags.INVERT_BOOLEANS);
 
         debug ("Success!");
@@ -133,15 +134,17 @@ public class AppWindow : Gtk.Window {
 
     /* ---------------- FILE OPERATIONS ---------------- */
     public void open_file (File file = this.file) {
-        this.file = file;
+
         debug ("Attempting to open file %s", file.get_basename ());
         try {
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
 
             buf.set_text (contents);
-            is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
-            header_label.tooltip_markup.text = this.file.get_path ();
+            this.file = file;            
+            this.is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+            this.header_label.tooltip_markup.text = this.file.get_path ();
+            this.file_name = file.get_basename ();
 
         } catch (Error err) {
             warning ("Couldn't open file: %s", err.message);
@@ -180,7 +183,6 @@ public class AppWindow : Gtk.Window {
         debug ("Save event!");
         var save_dialog = new Gtk.FileDialog () { initial_name = this.file.basename () };
         File oldfile = this.file;
-        bool delete_after = (Environment.get_user_data_dir () in this.file.get_path ());
 
         save_dialog.save.begin (this, null, (obj, res) => {
             try {
@@ -190,18 +192,20 @@ public class AppWindow : Gtk.Window {
 
                 // Only do after the operation, so we do not set this.file to something fucky
                 this.file = file;
+                this.file_name = file.get_basename ();
 
-                if ((delete_after) && (oldfile != file)) {
+                if ((unsaved_doc) && (oldfile != file)) {
                     oldfile.delete ();
                 }
+                this.is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+
 
             } catch (Error err) {
                     warning ("Failed to save file: %s", err.message);
             }
         });
 
-        is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
-        header_label.tooltip_markup.text = this.file.get_path ();
+
     }
 
     private void on_buffer_changed () {
@@ -224,8 +228,6 @@ public class AppWindow : Gtk.Window {
     private bool on_close () {
         debug ("Close event!");
 
-        bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
-
         // We want to delete empty unsaved documents
         if ((is_unsaved_doc) && (buf.text == "")) {
 
@@ -243,12 +245,11 @@ public class AppWindow : Gtk.Window {
     }
 
     private void on_title_changed () {
-        debug ("Close event!");
+        debug ("Renaming event!");
 
         try {
             this.file.move (header_label, File.CopyFlags.None);
-            header_label.text = this.file.basename;
-            header_label.tooltip_markup.text = this.file.get_path ();
+            this.file_name = this.file.get_basename ();
 
         } catch (Error err) {
             warning ("Failed to rename: %s", err.message);
