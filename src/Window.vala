@@ -142,7 +142,6 @@ public class AppWindow : Gtk.Window {
         save_dialog.save.begin (this, null, (obj, res) => {
             try {
 
-
                 file = save_dialog.save.end (res);
                 file_name = file.get_basename ();
                 save_file (file);
