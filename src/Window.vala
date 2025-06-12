@@ -155,7 +155,6 @@ public class AppWindow : Gtk.Window {
             }
         });
 
-
     }
 
     public void on_buffer_changed () {
