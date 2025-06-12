@@ -105,8 +105,28 @@ public class AppWindow : Gtk.Window {
         file.bind_property ("basename", header_label, "text");
         bind_property ("is_unsaved_doc", header_label, "sensitive", Glib.BindingFlags.INVERT_BOOLEANS);
 
-
         debug ("Success!");
+
+        // We want to open the file in a new window when people drop files on this
+        var drop_target = new Gtk.DropTarget (typeof (Gdk.FileList), Gdk.DragAction.COPY);
+        this.add_controller (drop_target);
+
+        //TODO: Proper handler
+        drop_target.drop.connect ((target, value, x, y) => {
+            debug ("Drop event!");
+            if (value.type () == typeof (Gdk.FileList)) {
+                var list = (Gdk.FileList)value;
+
+                File[] file_array = {};
+                foreach (unowned var files in list.get_files ()) {
+                    file_array += files;
+                }
+
+                Application.open (file_array);
+                return true;
+            }
+            return false;
+        });
 
         open_file (file);
     }
@@ -186,7 +206,7 @@ public class AppWindow : Gtk.Window {
         header_label.tooltip_markup.text = this.file.get_path();
     }
 
-    public void on_buffer_changed () {
+    private void on_buffer_changed () {
         debug ("The buffer has been modified, starting the debounce timer");
 
         if (debounce_timer_id != 0) {
@@ -203,7 +223,7 @@ public class AppWindow : Gtk.Window {
 
     }
 
-    public bool on_close () {
+    private bool on_close () {
         debug ("Close event!");
 
         bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
@@ -224,7 +244,7 @@ public class AppWindow : Gtk.Window {
         return false;
     }
 
-    public bool on_title_changed () {
+    private void on_title_changed () {
         debug ("Close event!");
 
         header_label.text
@@ -236,6 +256,11 @@ public class AppWindow : Gtk.Window {
         } catch (Error err) {
             warning ("Failed to rename: %s", err.message);
         }
+
+    }
+
+    public bool on_drag_drop (target, value, Double x, Doubley) {
+
 
     }
 }
