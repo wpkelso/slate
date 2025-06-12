@@ -141,7 +141,7 @@ public class AppWindow : Gtk.Window {
             var contents = distream.read_upto ("", -1, null);
 
             buf.set_text (contents);
-            this.file = file;            
+            this.file = file;
             this.is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
             this.header_label.tooltip_markup.text = this.file.get_path ();
             this.file_name = file.get_basename ();
