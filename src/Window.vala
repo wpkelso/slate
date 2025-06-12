@@ -56,7 +56,7 @@ public class AppWindow : Gtk.Window {
         header.add_css_class (Granite.STYLE_CLASS_FLAT);
         header.pack_start (actions_box);
 
-        header_label = new Gtk.EditableLabel () {
+        header_label = new Gtk.EditableLabel ("") {
             xalign = 0.5f,
             text = ""
         };
@@ -103,13 +103,13 @@ public class AppWindow : Gtk.Window {
         // 
         file.bind_property ("file_name", this, "title");
         file.bind_property ("file_name", header_label, "text");
-        bind_property ("is_unsaved_doc", header_label, "sensitive", Glib.BindingFlags.INVERT_BOOLEANS);
+        bind_property ("is_unsaved_doc", header_label, "sensitive", BindingFlags.INVERT_BOOLEANS);
 
         debug ("Success!");
 
         // We want to open the file in a new window when people drop files on this
         var drop_target = new Gtk.DropTarget (typeof (Gdk.FileList), Gdk.DragAction.COPY);
-        this.add_controller (drop_target);
+        add_controller (drop_target);
 
         //TODO: Proper handler
         drop_target.drop.connect ((target, value, x, y) => {
@@ -143,7 +143,7 @@ public class AppWindow : Gtk.Window {
             buf.set_text (contents);
             this.file = file;
             this.is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
-            this.header_label.tooltip_markup.text = this.file.get_path ();
+            this.header_label.tooltip_markup = this.file.get_path ();
             this.file_name = file.get_basename ();
 
         } catch (Error err) {
@@ -181,7 +181,7 @@ public class AppWindow : Gtk.Window {
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
         debug ("Save event!");
-        var save_dialog = new Gtk.FileDialog () { initial_name = this.file.basename () };
+        var save_dialog = new Gtk.FileDialog () { initial_name = this.file.get_basename () };
         File oldfile = this.file;
 
         save_dialog.save.begin (this, null, (obj, res) => {
@@ -194,7 +194,7 @@ public class AppWindow : Gtk.Window {
                 this.file = file;
                 this.file_name = file.get_basename ();
 
-                if ((unsaved_doc) && (oldfile != file)) {
+                if ((this.unsaved_doc) && (oldfile != file)) {
                     oldfile.delete ();
                 }
                 this.is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
@@ -248,7 +248,7 @@ public class AppWindow : Gtk.Window {
         debug ("Renaming event!");
 
         try {
-            this.file.move (header_label, File.CopyFlags.None);
+            this.file.move (File.new_for_path (header_label.text), File.CopyFlags.None);
             this.file_name = this.file.get_basename ();
 
         } catch (Error err) {
