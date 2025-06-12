@@ -8,7 +8,7 @@ const string APP_ID = "io.github.wpkelso.slate";
 
 public class Application : Gtk.Application {
 
-    uint created_documents = 1;
+    public static uint created_documents = 1;
 
     public Application () {
         Object (
@@ -39,99 +39,130 @@ public class Application : Gtk.Application {
             );
         });
 
-        SimpleAction new_document_action = new SimpleAction (
-                                                             "new-document",
-                                                             null
-        );
-        new_document_action.activate.connect (() => {
-            var name = get_new_document_name ();
-            var path = Path.build_filename (Environment.get_user_data_dir (), name);
-            var file = File.new_for_path (path);
-            debug (
-                   "Document is unsaved, creating an save location at: %s",
-                   path
-            );
-
-            var new_window = new AppWindow () {
-                is_new = true,
-            };
-            new_window.open_file (file);
-
-            debug ("Created new window with name %s", name);
-            add_window (new_window);
-            new_window.present ();
-        });
+        SimpleAction new_document_action = new SimpleAction ("new-document",null);
+        set_accels_for_action ("app.new-document", {"<Control>n"});
+        new_document_action.activate.connect (on_new_document);
         this.add_action (new_document_action);
 
-        SimpleAction open_document_action = new SimpleAction (
-                                                              "open-document",
-                                                              null
-        );
-        open_document_action.activate.connect (() => {
-            var open_dialog = new Gtk.FileDialog ();
-            var new_window = new AppWindow ();
-
-            open_dialog.open.begin (new_window, null, (obj, res) => {
-                try {
-                    var file = open_dialog.open.end (res);
-                    new_window.open_file (file);
-                    add_window (new_window);
-                    new_window.present ();
-                } catch (Error err) {
-                    warning ("Failed to select file to open: %s", err.message);
-                }
-            });
-        });
+        SimpleAction open_document_action = new SimpleAction ("open-document",null);
+        set_accels_for_action ("app.open-document", {"<Control>o"});
+        open_document_action.activate.connect (on_open_document);
         this.add_action (open_document_action);
+
+        //TODO: Vala complains about the method not existing
+        /*SimpleAction saveas_action = new SimpleAction ("saveas", null);
+        set_accels_for_action ("app.saveas", {"<Control>s"});
+        add_action (saveas);
+        saveas_action.activate.connect (() => {
+            this.get_active_window ().on_save_as ();
+        });*/
+
+        SimpleAction quit_action = new SimpleAction ("quit", null);
+        set_accels_for_action ("app.quit", {"<Control>q"});
+        add_action (quit_action);
+        quit_action.activate.connect (() => {
+            foreach (var window in this.get_windows ()) {
+                window.close_request ();
+            }
+            this.quit ();
+        });
     }
 
     protected override void activate () {
-        var name = get_new_document_name ();
-        var path = Path.build_filename (Environment.get_user_data_dir (), name);
-        var file = File.new_for_path (path);
-        debug (
-               "Document is unsaved, creating an save location at: %s",
-               path
-        );
 
-        var new_window = new AppWindow () {
-            is_new = true,
-        };
-        new_window.open_file (file);
+        // Reopen all the unsaved documents we have in datadir
+        check_if_datadir ();
+        var datadir = Environment.get_user_data_dir ();
+        try {
+            var pile_unsaved_documents = Dir.open (datadir);
 
-        add_window (new_window);
-        new_window.present ();
+            string? unsaved_doc = null;
+            while ((unsaved_doc = pile_unsaved_documents.read_name ()) != null) {
+                print (unsaved_doc);
+                string path = Path.build_filename (datadir, unsaved_doc);
+                File file = File.new_for_path (path);
+                open_file (file);
+                created_documents++;
+            }
+
+        } catch (Error e) {
+            warning ("Cannot read datadir! Is the disk okay? %s\n", e.message);
+        }
+
+        // What if there was none ? The loop wouldnt happen at all.
+        if (created_documents == 1) {
+            on_new_document ();
+        }
+
     }
 
     protected override void open (File[] files, string hint) {
         foreach (var file in files) {
             debug ("Creating window with file: %s", file.get_basename ());
-            var window = new AppWindow ();
-            window.open_file (file);
-
-            debug ("Adding new window to application");
-            add_window (window);
-            window.present ();
+            open_file (file);
         }
     }
 
     string get_new_document_name () {
-        var name = "New Document";
+        var name = _("New Document");
         if (created_documents > 1) {
             name = name + " " + created_documents.to_string ();
         }
 
-        debug (
-               "New document name is: %s",
-               name
-        );
+        debug ("New document name is: %s", name);
 
-        this.created_documents++;
+        created_documents++;
 
         return name;
     }
 
+    public static void check_if_datadir () {
+        debug ("do we have a data directory?");
+        var data_directory = File.new_for_path (Environment.get_user_data_dir ());
+        try {
+            if (!data_directory.query_exists ()) {
+                data_directory.make_directory ();
+            }
+        } catch (Error e) {
+            warning ("Failed to prepare target data directory %s\n", e.message);
+        }
+    }
+
     public static int main (string[] args) {
         return new Application ().run (args);
+    }
+
+    public void on_new_document () {
+        var name = get_new_document_name ();
+        var path = Path.build_filename (Environment.get_user_data_dir (), name);
+        var file = File.new_for_path (path);
+
+        check_if_datadir ();
+        try {
+            file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
+        } catch (Error e) {
+            warning ("Failed to prepare target file %s\n", e.message);
+        }
+
+        open_file (file);
+
+    }
+
+    public void open_file (File file) {
+        var new_window = new AppWindow (file);
+        add_window (new_window);
+        new_window.present ();
+    }
+
+    public void on_open_document () {
+        var open_dialog = new Gtk.FileDialog ();
+        open_dialog.open.begin (this.active_window, null, (obj, res) => {
+            try {
+                var file = open_dialog.open.end (res);
+                open_file (file);
+            } catch (Error err) {
+                warning ("Failed to select file to open: %s", err.message);
+            }
+        });
     }
 }
