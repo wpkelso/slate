@@ -57,8 +57,7 @@ public class AppWindow : Gtk.Window {
 
         header_label = new Gtk.EditableLabel () {
             xalign = 0.5f,
-            text = "",
-            tooltip_markup.text = ""
+            text = ""
         };
 
         header.title_widget = header_label;
@@ -246,20 +245,14 @@ public class AppWindow : Gtk.Window {
     private void on_title_changed () {
         debug ("Close event!");
 
-        header_label.text
-
         try {
             this.file.move (header_label, File.CopyFlags.None);
+            header_label.text = this.file.basename;
             header_label.tooltip_markup.text = this.file.get_path ();
 
         } catch (Error err) {
             warning ("Failed to rename: %s", err.message);
         }
-
-    }
-
-    public bool on_drag_drop (target, value, Double x, Doubley) {
-
 
     }
 }
