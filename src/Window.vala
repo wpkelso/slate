@@ -6,11 +6,15 @@
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
-    public string file_name { get; set; }
+    private Gtk.EditableLabel header_label;
 
     // Add a debounce so we aren't writing the entire buffer every character input
     public int interval = 500; // ms
     public uint debounce_timer_id = 0;
+
+    // We need to track this for specific cases
+    public bool is_unsaved_doc = false;
+
 
     public AppWindow (File file) {
         debug ("Constructing GUI");
@@ -51,6 +55,14 @@ public class AppWindow : Gtk.Window {
         header.add_css_class (Granite.STYLE_CLASS_FLAT);
         header.pack_start (actions_box);
 
+        header_label = new Gtk.EditableLabel () {
+            xalign = 0.5f,
+            text = "",
+            tooltip_markup.text = ""
+        };
+
+        header.title_widget = header_label;
+
         var text_view = new Gtk.TextView () {
             cursor_visible = true,
             editable = true,
@@ -86,7 +98,13 @@ public class AppWindow : Gtk.Window {
 
         debug ("Binding window title to file_name");
 
-        bind_property ("file_name", this, "title");
+        // Window title, and header label, are file name
+        // We dont want to rename files with no save location yet
+        // 
+        file.bind_property ("basename", this, "title");
+        file.bind_property ("basename", header_label, "text");
+        bind_property ("is_unsaved_doc", header_label, "sensitive", Glib.BindingFlags.INVERT_BOOLEANS);
+
 
         debug ("Success!");
 
@@ -102,14 +120,21 @@ public class AppWindow : Gtk.Window {
             this.file_name = file.get_basename ();
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
+            
             buf.set_text (contents);
+            is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+            header_label.tooltip_markup.text = this.file.get_path();
+        
         } catch (Error err) {
             warning ("Couldn't open file: %s", err.message);
         }
     }
 
     public void save_file (File file = this.file) {
-        if (Environment.get_user_data_dir () in this.file.get_path ()) {
+
+        // Check if datadir still there, recreate it if not
+        // So we prevent data loss in the event the user deletes everything during use
+        if (is_unsaved_doc) {
             Application.check_if_datadir ();
         }
 
@@ -126,11 +151,11 @@ public class AppWindow : Gtk.Window {
 
             var contents = buf.text;
             dostream.put_string (contents);
+
         } catch (Error err) {
             warning ("Couldn't save file: %s", err.message);
         }
     }
-
 
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
@@ -143,8 +168,10 @@ public class AppWindow : Gtk.Window {
             try {
 
                 file = save_dialog.save.end (res);
-                file_name = file.get_basename ();
                 save_file (file);
+
+                // Only do after the operation, so we do not set this.file to something fucky
+                this.file = file;
 
                 if ((delete_after) && (oldfile != file)) {
                     oldfile.delete ();
@@ -155,6 +182,8 @@ public class AppWindow : Gtk.Window {
             }
         });
 
+        is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+        header_label.tooltip_markup.text = this.file.get_path();
     }
 
     public void on_buffer_changed () {
@@ -193,5 +222,20 @@ public class AppWindow : Gtk.Window {
         }
 
         return false;
+    }
+
+    public bool on_title_changed () {
+        debug ("Close event!");
+
+        header_label.text
+        
+        try {
+            this.file.move (header_label,File.CopyFlags.None);
+            header_label.tooltip_markup.text = this.file.get_path();
+
+        } catch (Error err) {
+            warning ("Failed to rename: %s", err.message);
+        }
+
     }
 }
