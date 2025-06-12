@@ -137,7 +137,6 @@ public class AppWindow : Gtk.Window {
         this.file = file;
         debug ("Attempting to open file %s", file.get_basename ());
         try {
-            this.file_name = file.get_basename ();
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
             
@@ -180,7 +179,7 @@ public class AppWindow : Gtk.Window {
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
         debug ("Save event!");
-        var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
+        var save_dialog = new Gtk.FileDialog () { initial_name = this.file.basename () };
         File oldfile = this.file;
         bool delete_after = (Environment.get_user_data_dir () in this.file.get_path ());
 
