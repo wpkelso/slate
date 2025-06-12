@@ -139,11 +139,11 @@ public class AppWindow : Gtk.Window {
         try {
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
-            
+
             buf.set_text (contents);
             is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
-            header_label.tooltip_markup.text = this.file.get_path();
-        
+            header_label.tooltip_markup.text = this.file.get_path ();
+
         } catch (Error err) {
             warning ("Couldn't open file: %s", err.message);
         }
@@ -202,7 +202,7 @@ public class AppWindow : Gtk.Window {
         });
 
         is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
-        header_label.tooltip_markup.text = this.file.get_path();
+        header_label.tooltip_markup.text = this.file.get_path ();
     }
 
     private void on_buffer_changed () {
@@ -247,10 +247,10 @@ public class AppWindow : Gtk.Window {
         debug ("Close event!");
 
         header_label.text
-        
+
         try {
-            this.file.move (header_label,File.CopyFlags.None);
-            header_label.tooltip_markup.text = this.file.get_path();
+            this.file.move (header_label, File.CopyFlags.None);
+            header_label.tooltip_markup.text = this.file.get_path ();
 
         } catch (Error err) {
             warning ("Failed to rename: %s", err.message);
