@@ -14,7 +14,7 @@ msgstr ""
 
 #: src/Window.vala:21
 msgid "New Document"
-msgstr "Speichern"
+msgstr "Neues Dokument"
 
 #: src/Window.vala:28
 msgid "Open file"
