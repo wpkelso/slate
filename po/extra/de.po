@@ -1,19 +1,18 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Content-Transfer-Encoding: 8bit\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Language: FR\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Last-Translator: Teamcons - teamcons.carrd.co\n"
-"MIME-Version: 1.0\n"
-"PO-Revision-Date: 2025-06-09 HO:MI+ZONE\n"
-"POT-Creation-Date: 2025-06-09 16:27+0200\n"
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-12 19:53+0200\n"
+"PO-Revision-Date: 2025-06-09 HO:MI+ZONE\n"
+"Last-Translator: Teamcons - teamcons.carrd.co\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: data/io.github.wpkelso.slate.desktop.in:3
-#: data/slate.metainfo.xml.in:9
+#: data/io.github.wpkelso.slate.desktop.in:3 data/slate.metainfo.xml.in:9
 msgid "Slate"
 msgstr "Slate"
 
@@ -30,8 +29,12 @@ msgid "A \"dumb as rocks\" text editor"
 msgstr "Ein \"Dumm als Stein\" Texteditor"
 
 #: data/slate.metainfo.xml.in:12
-msgid "Slate is a lightweight plain text editor that edits text files and nothing more."
-msgstr "Slate ist ein leichtgewichtiger einfacher Texteditor, mit dem sich Textdateien bearbeiten lassen, mehr nicht."
+msgid ""
+"Slate is a lightweight plain text editor that edits text files and nothing "
+"more."
+msgstr ""
+"Slate ist ein leichtgewichtiger einfacher Texteditor, mit dem sich "
+"Textdateien bearbeiten lassen, mehr nicht."
 
 #: data/slate.metainfo.xml.in:16
 msgid "Make new files!"
