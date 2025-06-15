@@ -44,7 +44,6 @@ public class AppWindow : Gtk.Window {
         actions_box.append (open_button);
         actions_box.append (save_as_button);
 
-
         var header = new Gtk.HeaderBar () {
             show_title_buttons = true
         };
@@ -101,7 +100,7 @@ public class AppWindow : Gtk.Window {
         try {
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
-            buf.set_text (contents);
+            buf.set_text (contents ?? "");
 
             this.file = file;
             this.file_name = file.get_basename ();
@@ -129,6 +128,7 @@ public class AppWindow : Gtk.Window {
 
             var contents = buf.text;
             dostream.put_string (contents);
+
         } catch (Error err) {
             warning ("Couldn't save file: %s", err.message);
         }

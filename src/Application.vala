@@ -122,6 +122,7 @@ public class Application : Gtk.Application {
         Utils.check_if_datadir ();
         try {
             file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
+
         } catch (Error e) {
             warning ("Failed to prepare target file %s\n", e.message);
         }
