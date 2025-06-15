@@ -71,7 +71,7 @@ public class Application : Gtk.Application {
     protected override void activate () {
 
         // Reopen all the unsaved documents we have in datadir
-        check_if_datadir ();
+        Utils.check_if_datadir ();
         var datadir = Environment.get_user_data_dir ();
         try {
             var pile_unsaved_documents = Dir.open (datadir);
@@ -103,41 +103,23 @@ public class Application : Gtk.Application {
         }
     }
 
-    string get_new_document_name () {
-        var name = _("New Document");
-        if (created_documents > 1) {
-            name = name + " " + created_documents.to_string ();
-        }
-
-        debug ("New document name is: %s", name);
-
-        created_documents++;
-
-        return name;
-    }
-
-    public static void check_if_datadir () {
-        debug ("do we have a data directory?");
-        var data_directory = File.new_for_path (Environment.get_user_data_dir ());
-        try {
-            if (!data_directory.query_exists ()) {
-                data_directory.make_directory ();
-            }
-        } catch (Error e) {
-            warning ("Failed to prepare target data directory %s\n", e.message);
-        }
+    public void open_file (File file) {
+        var new_window = new AppWindow (file);
+        add_window (new_window);
+        new_window.present ();
     }
 
     public static int main (string[] args) {
         return new Application ().run (args);
     }
 
+    /* ---------------- HANDLERS ---------------- */
     public void on_new_document () {
-        var name = get_new_document_name ();
+        var name = Utils.get_new_document_name ();
         var path = Path.build_filename (Environment.get_user_data_dir (), name);
         var file = File.new_for_path (path);
 
-        check_if_datadir ();
+        Utils.check_if_datadir ();
         try {
             file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
         } catch (Error e) {
@@ -146,12 +128,6 @@ public class Application : Gtk.Application {
 
         open_file (file);
 
-    }
-
-    public void open_file (File file) {
-        var new_window = new AppWindow (file);
-        add_window (new_window);
-        new_window.present ();
     }
 
     public void on_open_document () {

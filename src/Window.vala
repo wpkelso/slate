@@ -113,7 +113,7 @@ public class AppWindow : Gtk.Window {
 
     public void save_file (File file = this.file) {
         if (Environment.get_user_data_dir () in this.file.get_path ()) {
-            Application.check_if_datadir ();
+            Utils.check_if_datadir ();
         }
 
         try {
@@ -134,7 +134,6 @@ public class AppWindow : Gtk.Window {
         }
     }
 
-
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
         debug ("Save event!");
@@ -146,8 +145,9 @@ public class AppWindow : Gtk.Window {
             try {
 
                 file = save_dialog.save.end (res);
-                file_name = file.get_basename ();
                 save_file (file);
+                this.file = file;
+                file_name = file.get_basename ();
 
                 if ((delete_after) && (oldfile != file)) {
                     oldfile.delete ();
