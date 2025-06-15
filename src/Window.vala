@@ -146,6 +146,7 @@ public class AppWindow : Gtk.Window {
 
                 file = save_dialog.save.end (res);
                 save_file (file);
+
                 this.file = file;
                 file_name = file.get_basename ();
 
@@ -187,6 +188,7 @@ public class AppWindow : Gtk.Window {
 
             try {
                 this.file.delete ();
+
             } catch (Error err) {
                     warning ("Failed to delete empty temp file: %s", err.message);
             }
