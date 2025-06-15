@@ -96,13 +96,16 @@ public class AppWindow : Gtk.Window {
 
     /* ---------------- FILE OPERATIONS ---------------- */
     public void open_file (File file = this.file) {
-        this.file = file;
         debug ("Attempting to open file %s", file.get_basename ());
+
         try {
-            this.file_name = file.get_basename ();
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
             buf.set_text (contents);
+
+            this.file = file;
+            this.file_name = file.get_basename ();
+
         } catch (Error err) {
             warning ("Couldn't open file: %s", err.message);
         }
