@@ -140,9 +140,14 @@ public class AppWindow : Gtk.Window {
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
         debug ("Save event!");
-        var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
+
         File oldfile = this.file;
-        bool delete_after = (Environment.get_user_data_dir () in this.file.get_path ());
+        bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+
+        var save_dialog = new Gtk.FileDialog () {
+            initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
+        };
+
 
         save_dialog.save.begin (this, null, (obj, res) => {
             try {
@@ -154,7 +159,7 @@ public class AppWindow : Gtk.Window {
                 file_name = file.get_basename ();
                 this.tooltip_text = file.get_path ();
 
-                if ((delete_after) && (oldfile != file)) {
+                if ((is_unsaved_doc) && (oldfile != file)) {
                     oldfile.delete ();
                 }
 
