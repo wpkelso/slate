@@ -8,3 +8,4 @@ Terminal=false
 Type=Application
 StartupNotify=true
 Categories=Utility;GTK;Office;Development;TextTools;TextEditor;
+MimeType=text/plain;
