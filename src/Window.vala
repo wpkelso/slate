@@ -148,7 +148,6 @@ public class AppWindow : Gtk.Window {
             initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
         };
 
-
         save_dialog.save.begin (this, null, (obj, res) => {
             try {
 
