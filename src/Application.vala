@@ -50,7 +50,7 @@ public class Application : Gtk.Application {
         this.add_action (open_document_action);
 
         SimpleAction saveas_action = new SimpleAction ("saveas", null);
-        set_accels_for_action ("app.saveas", {"<Control>s"});
+        set_accels_for_action ("app.saveas", {"<Control><Shift>s"});
         add_action (saveas_action);
         saveas_action.activate.connect (() => {
             unowned var window = this.get_active_window () as AppWindow;
