@@ -9,6 +9,8 @@ const string APP_ID = "io.github.wpkelso.slate";
 public class Application : Gtk.Application {
 
     public static uint created_documents = 1;
+    public static string data_dir_path = Environment.get_user_data_dir () + "/slate";
+
 
     public Application () {
         Object (
@@ -70,20 +72,22 @@ public class Application : Gtk.Application {
             }
             this.quit ();
         });
+
+        debug ("Datadir path: %s", data_dir_path);
     }
 
     protected override void activate () {
 
         // Reopen all the unsaved documents we have in datadir
-        check_if_datadir ();
-        var datadir = Environment.get_user_data_dir ();
+        check_if_data_dir ();
+
         try {
-            var pile_unsaved_documents = Dir.open (datadir);
+            var pile_unsaved_documents = Dir.open (data_dir_path);
 
             string? unsaved_doc = null;
             while ((unsaved_doc = pile_unsaved_documents.read_name ()) != null) {
                 print (unsaved_doc);
-                string path = Path.build_filename (datadir, unsaved_doc);
+                string path = Path.build_filename (data_dir_path, unsaved_doc);
                 File file = File.new_for_path (path);
                 open_file (file);
                 created_documents++;
@@ -120,12 +124,15 @@ public class Application : Gtk.Application {
         return name;
     }
 
-    public static void check_if_datadir () {
-        debug ("do we have a data directory?");
-        var data_directory = File.new_for_path (Environment.get_user_data_dir ());
+    public static void check_if_data_dir () {
+        debug ("Do we have a data directory?");
+        var data_directory = File.new_for_path (data_dir_path);
         try {
             if (!data_directory.query_exists ()) {
                 data_directory.make_directory ();
+                debug ("No, creating data directory");
+            } else {
+                debug ("Yes, data directory exists!");
             }
         } catch (Error e) {
             warning ("Failed to prepare target data directory %s\n", e.message);
@@ -138,10 +145,11 @@ public class Application : Gtk.Application {
 
     public void on_new_document () {
         var name = get_new_document_name ();
-        var path = Path.build_filename (Environment.get_user_data_dir (), name);
+        var path = Path.build_filename (data_dir_path, name);
         var file = File.new_for_path (path);
 
-        check_if_datadir ();
+        check_if_data_dir ();
+
         try {
             file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
         } catch (Error e) {

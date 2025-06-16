@@ -1,4 +1,5 @@
 build
+build-native
 builddir
 .atom-dbg.cson
 .vscode
