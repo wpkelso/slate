@@ -77,21 +77,19 @@ public class AppWindow : Gtk.Window {
         default_width = 300;
         titlebar = header;
 
-        debug ("Connecting signals");
+        debug ("Binding window title to file_name");
+        bind_property ("file_name", this, "title");
+        debug ("Success!");
 
+        open_file (file);
+
+        debug ("Connecting signals");
         // Signal callbacks are heavily derived from similar operations in
         // elementary/code
         save_as_button.clicked.connect (on_save_as);
         this.close_request.connect (on_close);
         buf.changed.connect (on_buffer_changed);
 
-        debug ("Binding window title to file_name");
-
-        bind_property ("file_name", this, "title");
-
-        debug ("Success!");
-
-        open_file (file);
     }
 
 
