@@ -161,9 +161,14 @@ public class Application : Gtk.Application {
     }
 
     public void open_file (File file) {
-        var new_window = new AppWindow (file);
-        add_window (new_window);
-        new_window.present ();
+        if (file.query_file_type (FileQueryInfoFlags.NONE) == FileType.REGULAR) {
+            var new_window = new AppWindow (file);
+            add_window (new_window);
+            new_window.present ();
+        } else {
+            warning ("Couldn't open, not a regular file.");
+        }
+
     }
 
     public void on_open_document () {
