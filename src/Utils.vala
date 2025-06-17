@@ -19,16 +19,18 @@
         return name;
     }
 
-    public static void check_if_datadir () {
-        debug ("do we have a data directory?");
-
-        var data_directory = File.new_for_path (Environment.get_user_data_dir ());
+public static void check_if_data_dir () {
+        debug ("Do we have a data directory?");
+        var data_directory = File.new_for_path (data_dir_path);
         try {
             if (!data_directory.query_exists ()) {
                 data_directory.make_directory ();
+                debug ("No, creating data directory");
+            } else {
+                debug ("Yes, data directory exists!");
             }
-        } catch (Error e) {
-            warning ("Failed to prepare target data directory %s\n", e.message);
+        } catch (Error err) {
+            warning ("Failed to prepare target data directory %s\n", err.message);
         }
     }
  }
