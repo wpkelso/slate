@@ -128,7 +128,7 @@ public class Application : Gtk.Application {
         var file = File.new_for_path (path);
 
         Utils.check_if_data_dir ();
-        
+
         try {
             file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
 
@@ -151,7 +151,7 @@ public class Application : Gtk.Application {
         new_window.present ();
         return true;
     }
-    
+
     public void on_open_document () {
         var open_dialog = new Gtk.FileDialog ();
         open_dialog.open.begin (this.active_window, null, (obj, res) => {

@@ -141,7 +141,7 @@ public class AppWindow : Gtk.Window {
 
         File oldfile = this.file;
         bool is_unsaved_doc = (Application.data_dir_path in this.file.get_path ());
-        
+
         var save_dialog = new Gtk.FileDialog () {
             initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
         };
