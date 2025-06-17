@@ -6,6 +6,7 @@
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
+    private Gtk.HeaderBar header;
     public string file_name { get; set; }
 
     // Add a debounce so we aren't writing the entire buffer every character input
@@ -44,9 +45,9 @@ public class AppWindow : Gtk.Window {
         actions_box.append (open_button);
         actions_box.append (save_as_button);
 
-
         var header = new Gtk.HeaderBar () {
-            show_title_buttons = true
+            show_title_buttons = true,
+            tooltip_text = ""
         };
         header.add_css_class (Granite.STYLE_CLASS_FLAT);
         header.pack_start (actions_box);
@@ -76,33 +77,35 @@ public class AppWindow : Gtk.Window {
         default_width = 300;
         titlebar = header;
 
-        debug ("Connecting signals");
+        debug ("Binding window title to file_name");
+        bind_property ("file_name", this, "title");
+        debug ("Success!");
 
+        open_file (file);
+
+        debug ("Connecting signals");
         // Signal callbacks are heavily derived from similar operations in
         // elementary/code
         save_as_button.clicked.connect (on_save_as);
         this.close_request.connect (on_close);
         buf.changed.connect (on_buffer_changed);
 
-        debug ("Binding window title to file_name");
-
-        bind_property ("file_name", this, "title");
-
-        debug ("Success!");
-
-        open_file (file);
     }
 
 
     /* ---------------- FILE OPERATIONS ---------------- */
     public void open_file (File file = this.file) {
-        this.file = file;
         debug ("Attempting to open file %s", file.get_basename ());
+
         try {
-            this.file_name = file.get_basename ();
             var distream = new DataInputStream (file.read (null));
             var contents = distream.read_upto ("", -1, null);
-            buf.set_text (contents);
+            buf.set_text (contents ?? "");
+
+            this.file = file;
+            this.file_name = file.get_basename ();
+            this.tooltip_text = file.get_path ();
+
         } catch (Error err) {
             warning ("Couldn't open file: %s", err.message);
         }
@@ -110,7 +113,7 @@ public class AppWindow : Gtk.Window {
 
     public void save_file (File file = this.file) {
         if (Environment.get_user_data_dir () in this.file.get_path ()) {
-            Application.check_if_datadir ();
+            Utils.check_if_datadir ();
         }
 
         try {
@@ -126,27 +129,34 @@ public class AppWindow : Gtk.Window {
 
             var contents = buf.text;
             dostream.put_string (contents);
+
         } catch (Error err) {
             warning ("Couldn't save file: %s", err.message);
         }
     }
 
-
     /* ---------------- HANDLERS ---------------- */
     public void on_save_as () {
         debug ("Save event!");
-        var save_dialog = new Gtk.FileDialog () { initial_name = file_name };
+
         File oldfile = this.file;
-        bool delete_after = (Environment.get_user_data_dir () in this.file.get_path ());
+        bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+
+        var save_dialog = new Gtk.FileDialog () {
+            initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
+        };
 
         save_dialog.save.begin (this, null, (obj, res) => {
             try {
 
                 file = save_dialog.save.end (res);
-                file_name = file.get_basename ();
                 save_file (file);
 
-                if ((delete_after) && (oldfile != file)) {
+                this.file = file;
+                file_name = file.get_basename ();
+                this.tooltip_text = file.get_path ();
+
+                if ((is_unsaved_doc) && (oldfile != file)) {
                     oldfile.delete ();
                 }
 
@@ -184,6 +194,7 @@ public class AppWindow : Gtk.Window {
 
             try {
                 this.file.delete ();
+
             } catch (Error err) {
                     warning ("Failed to delete empty temp file: %s", err.message);
             }
