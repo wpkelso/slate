@@ -89,7 +89,12 @@ public class Application : Gtk.Application {
                 print (unsaved_doc);
                 string path = Path.build_filename (data_dir_path, unsaved_doc);
                 File file = File.new_for_path (path);
-                open_file (file);
+
+                bool ret = open_file (file);
+                if (!ret) {
+                    continue;
+                }
+
                 created_documents++;
             }
 
@@ -160,15 +165,16 @@ public class Application : Gtk.Application {
 
     }
 
-    public void open_file (File file) {
-        if (file.query_file_type (FileQueryInfoFlags.NONE) == FileType.REGULAR) {
-            var new_window = new AppWindow (file);
-            add_window (new_window);
-            new_window.present ();
-        } else {
+    public bool open_file (File file) {
+        if (file.query_file_type (FileQueryInfoFlags.NONE) != FileType.REGULAR) {
             warning ("Couldn't open, not a regular file.");
+            return false;
         }
 
+        var new_window = new AppWindow (file);
+        add_window (new_window);
+        new_window.present ();
+        return true;
     }
 
     public void on_open_document () {
