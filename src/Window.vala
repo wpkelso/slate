@@ -6,7 +6,6 @@
 public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
-    private Gtk.HeaderBar header;
     public string file_name { get; set; }
 
     // Add a debounce so we aren't writing the entire buffer every character input
