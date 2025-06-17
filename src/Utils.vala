@@ -21,7 +21,7 @@
 
 public static void check_if_data_dir () {
         debug ("Do we have a data directory?");
-        var data_directory = File.new_for_path (data_dir_path);
+        var data_directory = File.new_for_path (Application.data_dir_path);
         try {
             if (!data_directory.query_exists ()) {
                 data_directory.make_directory ();

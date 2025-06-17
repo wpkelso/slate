@@ -113,7 +113,7 @@ public class AppWindow : Gtk.Window {
 
     public void save_file (File file = this.file) {
         if (Application.data_dir_path in this.file.get_path ()) {
-            Utils.check_if_datadir ();
+            Utils.check_if_data_dir ();
         }
 
         try {

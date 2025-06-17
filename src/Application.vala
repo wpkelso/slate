@@ -90,7 +90,7 @@ public class Application : Gtk.Application {
                 string path = Path.build_filename (data_dir_path, unsaved_doc);
                 File file = File.new_for_path (path);
 
-                bool ret = open_file (file);
+                bool ret = open_window_with_file (file);
                 if (!ret) {
                     continue;
                 }
@@ -136,7 +136,7 @@ public class Application : Gtk.Application {
             warning ("Failed to prepare target file %s\n", e.message);
         }
 
-        open_file (file);
+        open_window_with_file (file);
 
     }
 
