@@ -79,7 +79,7 @@ public class Application : Gtk.Application {
     protected override void activate () {
 
         // Reopen all the unsaved documents we have in datadir
-        check_if_data_dir ();
+        Utils.check_if_data_dir ();
 
         try {
             var pile_unsaved_documents = Dir.open (data_dir_path);
@@ -112,35 +112,7 @@ public class Application : Gtk.Application {
     protected override void open (File[] files, string hint) {
         foreach (var file in files) {
             debug ("Creating window with file: %s", file.get_basename ());
-            open_file (file);
-        }
-    }
-
-    string get_new_document_name () {
-        var name = _("New Document");
-        if (created_documents > 1) {
-            name = name + " " + created_documents.to_string ();
-        }
-
-        debug ("New document name is: %s", name);
-
-        created_documents++;
-
-        return name;
-    }
-
-    public static void check_if_data_dir () {
-        debug ("Do we have a data directory?");
-        var data_directory = File.new_for_path (data_dir_path);
-        try {
-            if (!data_directory.query_exists ()) {
-                data_directory.make_directory ();
-                debug ("No, creating data directory");
-            } else {
-                debug ("Yes, data directory exists!");
-            }
-        } catch (Error e) {
-            warning ("Failed to prepare target data directory %s\n", e.message);
+            open_window_with_file (file);
         }
     }
 
@@ -148,15 +120,18 @@ public class Application : Gtk.Application {
         return new Application ().run (args);
     }
 
+    /* ---------------- HANDLERS ---------------- */
     public void on_new_document () {
-        var name = get_new_document_name ();
-        var path = Path.build_filename (data_dir_path, name);
+
+        var name = Utils.get_new_document_name ();
+        var path = Path.build_filename (Environment.get_user_data_dir (), name);
         var file = File.new_for_path (path);
 
-        check_if_data_dir ();
-
+        Utils.check_if_data_dir ();
+        
         try {
             file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
+
         } catch (Error e) {
             warning ("Failed to prepare target file %s\n", e.message);
         }
@@ -165,7 +140,7 @@ public class Application : Gtk.Application {
 
     }
 
-    public bool open_file (File file) {
+    public bool open_window_with_file (File file) {
         if (file.query_file_type (FileQueryInfoFlags.NONE) != FileType.REGULAR) {
             warning ("Couldn't open, not a regular file.");
             return false;
@@ -176,13 +151,13 @@ public class Application : Gtk.Application {
         new_window.present ();
         return true;
     }
-
+    
     public void on_open_document () {
         var open_dialog = new Gtk.FileDialog ();
         open_dialog.open.begin (this.active_window, null, (obj, res) => {
             try {
                 var file = open_dialog.open.end (res);
-                open_file (file);
+                open_window_with_file (file);
             } catch (Error err) {
                 warning ("Failed to select file to open: %s", err.message);
             }
