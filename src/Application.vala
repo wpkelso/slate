@@ -124,7 +124,7 @@ public class Application : Gtk.Application {
     public void on_new_document () {
 
         var name = Utils.get_new_document_name ();
-        var path = Path.build_filename (Environment.get_user_data_dir (), name);
+        var path = Path.build_filename (data_dir_path, name);
         var file = File.new_for_path (path);
 
         Utils.check_if_data_dir ();
