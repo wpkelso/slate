@@ -19,7 +19,7 @@
         return name;
     }
 
-public static void check_if_data_dir () {
+    public static void check_if_data_dir () {
         debug ("Do we have a data directory?");
         var data_directory = File.new_for_path (Application.data_dir_path);
         try {
