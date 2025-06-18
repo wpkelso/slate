@@ -112,8 +112,8 @@ public class AppWindow : Gtk.Window {
     }
 
     public void save_file (File file = this.file) {
-        if (Environment.get_user_data_dir () in this.file.get_path ()) {
-            Utils.check_if_datadir ();
+        if (Application.data_dir_path in this.file.get_path ()) {
+            Utils.check_if_data_dir ();
         }
 
         try {
@@ -140,7 +140,7 @@ public class AppWindow : Gtk.Window {
         debug ("Save event!");
 
         File oldfile = this.file;
-        bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+        bool is_unsaved_doc = (Application.data_dir_path in this.file.get_path ());
 
         var save_dialog = new Gtk.FileDialog () {
             initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
@@ -187,7 +187,7 @@ public class AppWindow : Gtk.Window {
     public bool on_close () {
         debug ("Close event!");
 
-        bool is_unsaved_doc = (Environment.get_user_data_dir () in this.file.get_path ());
+        bool is_unsaved_doc = (Application.data_dir_path in this.file.get_path ());
 
         // We want to delete empty unsaved documents
         if ((is_unsaved_doc) && (buf.text == "")) {

@@ -9,6 +9,8 @@ const string APP_ID = "io.github.wpkelso.slate";
 public class Application : Gtk.Application {
 
     public static uint created_documents = 1;
+    public static string data_dir_path = Environment.get_user_data_dir () + "/slate";
+
 
     public Application () {
         Object (
@@ -70,22 +72,29 @@ public class Application : Gtk.Application {
             }
             this.quit ();
         });
+
+        debug ("Datadir path: %s", data_dir_path);
     }
 
     protected override void activate () {
 
         // Reopen all the unsaved documents we have in datadir
-        Utils.check_if_datadir ();
-        var datadir = Environment.get_user_data_dir ();
+        Utils.check_if_data_dir ();
+
         try {
-            var pile_unsaved_documents = Dir.open (datadir);
+            var pile_unsaved_documents = Dir.open (data_dir_path);
 
             string? unsaved_doc = null;
             while ((unsaved_doc = pile_unsaved_documents.read_name ()) != null) {
                 print (unsaved_doc);
-                string path = Path.build_filename (datadir, unsaved_doc);
+                string path = Path.build_filename (data_dir_path, unsaved_doc);
                 File file = File.new_for_path (path);
-                open_file (file);
+
+                bool ret = open_window_with_file (file);
+                if (!ret) {
+                    continue;
+                }
+
                 created_documents++;
             }
 
@@ -103,14 +112,8 @@ public class Application : Gtk.Application {
     protected override void open (File[] files, string hint) {
         foreach (var file in files) {
             debug ("Creating window with file: %s", file.get_basename ());
-            open_file (file);
+            open_window_with_file (file);
         }
-    }
-
-    public void open_file (File file) {
-        var new_window = new AppWindow (file);
-        add_window (new_window);
-        new_window.present ();
     }
 
     public static int main (string[] args) {
@@ -119,11 +122,13 @@ public class Application : Gtk.Application {
 
     /* ---------------- HANDLERS ---------------- */
     public void on_new_document () {
+
         var name = Utils.get_new_document_name ();
-        var path = Path.build_filename (Environment.get_user_data_dir (), name);
+        var path = Path.build_filename (data_dir_path, name);
         var file = File.new_for_path (path);
 
-        Utils.check_if_datadir ();
+        Utils.check_if_data_dir ();
+
         try {
             file.create_readwrite (GLib.FileCreateFlags.REPLACE_DESTINATION);
 
@@ -131,8 +136,20 @@ public class Application : Gtk.Application {
             warning ("Failed to prepare target file %s\n", e.message);
         }
 
-        open_file (file);
+        open_window_with_file (file);
 
+    }
+
+    public bool open_window_with_file (File file) {
+        if (file.query_file_type (FileQueryInfoFlags.NONE) != FileType.REGULAR) {
+            warning ("Couldn't open, not a regular file.");
+            return false;
+        }
+
+        var new_window = new AppWindow (file);
+        add_window (new_window);
+        new_window.present ();
+        return true;
     }
 
     public void on_open_document () {
@@ -140,7 +157,7 @@ public class Application : Gtk.Application {
         open_dialog.open.begin (this.active_window, null, (obj, res) => {
             try {
                 var file = open_dialog.open.end (res);
-                open_file (file);
+                open_window_with_file (file);
             } catch (Error err) {
                 warning ("Failed to select file to open: %s", err.message);
             }
