@@ -45,7 +45,7 @@ public class AppWindow : Gtk.Window {
         actions_box.append (open_button);
         actions_box.append (save_as_button);
 
-        var header = new Gtk.HeaderBar () {
+        header = new Gtk.HeaderBar () {
             show_title_buttons = true,
             tooltip_text = ""
         };
@@ -104,7 +104,7 @@ public class AppWindow : Gtk.Window {
 
             this.file = file;
             this.file_name = file.get_basename ();
-            this.tooltip_text = file.get_path ();
+            header.tooltip_text = file.get_path ();
 
         } catch (Error err) {
             warning ("Couldn't open file: %s", err.message);
@@ -154,7 +154,7 @@ public class AppWindow : Gtk.Window {
 
                 this.file = file;
                 file_name = file.get_basename ();
-                this.tooltip_text = file.get_path ();
+                header.tooltip_text = file.get_path ();
 
                 if ((is_unsaved_doc) && (oldfile != file)) {
                     oldfile.delete ();
