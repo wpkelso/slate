@@ -1,7 +1,7 @@
 project(
     'io.github.wpkelso.slate',
     ['vala', 'c'],
-    version: '0.0.1',
+    version: '1.1.0',
     license: 'GPL-3.0'
 )
 
