@@ -141,8 +141,23 @@ public class Application : Gtk.Application {
     }
 
     public bool open_window_with_file (File file) {
-        if (file.query_file_type (FileQueryInfoFlags.NONE) != FileType.REGULAR) {
-            warning ("Couldn't open, not a regular file.");
+
+        if (!Utils.check_if_valid_text_file (file)) {
+            var window = get_windows ().first ().data;
+            var error_dialog = new
+            Granite.MessageDialog.with_image_from_icon_name (
+                "Couldn't open file",
+                "The specified file is not a valid text file",
+                "dialog-error"
+            ) {
+                transient_for = window
+            };
+
+            error_dialog.response.connect ((response_id) => {
+                error_dialog.destroy ();
+            });
+
+            error_dialog.show ();
             return false;
         }
 

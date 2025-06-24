@@ -33,4 +33,24 @@
             warning ("Failed to prepare target data directory %s\n", err.message);
         }
     }
+
+    public static bool check_if_valid_text_file (File file) {
+        try {
+            FileInfo info = file.query_info ("*", NOFOLLOW_SYMLINKS);
+
+            var content_type = info.get_content_type (); 
+            if (info.get_file_type () == FileType.REGULAR && 
+                    ContentType.is_a (content_type, "text/*") || 
+                    ContentType.is_a (content_type, "application/x-zerosize")
+               ) { 
+                return true;
+            }
+
+        } catch (Error err) {
+            warning ("Failed to get file information: %s", err.message);
+        }
+
+
+        return false;
+    }
  }
