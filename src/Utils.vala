@@ -50,7 +50,6 @@
             warning ("Failed to get file information: %s", err.message);
         }
 
-
         return false;
     }
  }
