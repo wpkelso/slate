@@ -22,7 +22,7 @@ public class AppWindow : Gtk.Window {
             action_name = "app.new-document",
             tooltip_markup = Granite.markup_accel_tooltip (
                     {"<Control>n"},
-                    _("New Document")
+                    _("New document")
             )
         };
         var open_button = new Gtk.Button.from_icon_name ("document-open") {
