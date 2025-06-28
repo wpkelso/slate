@@ -9,3 +9,8 @@ Type=Application
 StartupNotify=true
 Categories=Utility;GTK;Office;Development;TextTools;TextEditor;
 MimeType=text/plain;
+Actions=NewDocument;
+
+[Desktop Action NewDocument]
+Exec=io.github.wpkelso.slate --new-document
+Name=New Document
