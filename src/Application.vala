@@ -192,10 +192,12 @@ public class Application : Gtk.Application {
                 break;
 
             default:
-                open_window_with_file (File.new_for_commandline_arg (args[1]));
+                foreach (var arg in args[1:args.length]) {
+                    open_window_with_file (File.new_for_commandline_arg (arg));
+                }
                 break;
         }
-            return 0;
+        return 0;
 
     }
 }
