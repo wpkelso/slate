@@ -10,12 +10,12 @@ public class Application : Gtk.Application {
 
     public static uint created_documents = 1;
     public static string data_dir_path = Environment.get_user_data_dir () + "/slate";
-
+    public bool newdocument = false;
 
     public Application () {
         Object (
                 application_id: APP_ID,
-                flags: ApplicationFlags.DEFAULT_FLAGS | ApplicationFlags.HANDLES_OPEN
+                flags: ApplicationFlags.DEFAULT_FLAGS | ApplicationFlags.HANDLES_OPEN | ApplicationFlags.HANDLES_COMMAND_LINE
         );
     }
 
@@ -177,5 +177,25 @@ public class Application : Gtk.Application {
                 warning ("Failed to select file to open: %s", err.message);
             }
         });
+    }
+
+    protected override int command_line (ApplicationCommandLine command_line) {
+    string[] args = command_line.get_arguments ();
+
+        switch (args[1]) {
+            case "--new-document":
+                on_new_document ();
+                break;
+
+            case (null):
+                activate ();
+                break;
+
+            default:
+                open_window_with_file (File.new_for_commandline_arg (args[1]));
+                break;
+        }
+            return 0;
+
     }
 }
