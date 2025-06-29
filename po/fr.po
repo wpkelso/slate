@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: io.github.wpkelso.slate\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-15 14:50+0200\n"
+"POT-Creation-Date: 2025-06-29 22:39+0200\n"
 "PO-Revision-Date: 2025-06-11 HO:MI+ZONE\n"
 "Last-Translator: Teamcons - teamcons.carrd.co\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Window.vala:24 src/Utils.vala:9
+#: src/Window.vala:25 src/Utils.vala:9
 msgid "New Document"
 msgstr "Nouveau Document"
 
-#: src/Window.vala:31
+#: src/Window.vala:32
 msgid "Open file"
 msgstr "Ouvrir fichier"
 
-#: src/Window.vala:37
+#: src/Window.vala:38
 msgid "Save as"
 msgstr "Enregistrer sous"

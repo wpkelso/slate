@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-12 19:53+0200\n"
+"POT-Creation-Date: 2025-06-29 22:43+0200\n"
 "PO-Revision-Date: 2025-06-11 HO:MI+ZONE\n"
 "Last-Translator: Teamcons - teamcons.carrd.co\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,21 +22,22 @@ msgid "Slate"
 msgstr "Slate"
 
 #: data/io.github.wpkelso.slate.desktop.in:4
-msgid "\"Dumb as rocks text editor\""
-msgstr "Editor de texto «tonto como una piedra»"
+#, fuzzy
+msgid "Edit text"
+msgstr "¡Editar archivos!"
 
 #: data/io.github.wpkelso.slate.desktop.in:7
-msgid "Text;Editor;\"Text Editor\";"
+#, fuzzy
+msgid "Text;Editor;Text Editor;"
 msgstr "Texto;Editor;\"Editor de texto\";"
 
 #: data/slate.metainfo.xml.in:10
-msgid "A \"dumb as rocks\" text editor"
-msgstr "Un editor de texto «tonto como una piedra»"
+msgid "The text editor that's dumb as rocks!"
+msgstr ""
 
 #: data/slate.metainfo.xml.in:12
-msgid ""
-"Slate is a lightweight plain text editor that edits text files and nothing "
-"more."
+#, fuzzy
+msgid "Slate is a simple, lightweight plain text editor."
 msgstr ""
 "Slate es un editor de texto sencillo y ligero que edita archivos de texto y "
 "nada más."
@@ -69,26 +70,32 @@ msgstr "¡Cierre los archivos!"
 msgid "William Kelso"
 msgstr "William Kelso"
 
-#: data/slate.metainfo.xml.in:66
+#: data/slate.metainfo.xml.in:78
 msgid "Various small fixes for AppCenter release"
 msgstr "Varias pequeñas correcciones para el lanzamiento de AppCenter"
 
-#: data/slate.metainfo.xml.in:68
+#: data/slate.metainfo.xml.in:80
 msgid "Remove copy-paste error from metainfo"
 msgstr "Eliminar error de copiar y pegar de metainfo"
 
-#: data/slate.metainfo.xml.in:69
+#: data/slate.metainfo.xml.in:81
 msgid "Update screenshots"
 msgstr "Actualizar capturas de pantalla"
 
-#: data/slate.metainfo.xml.in:70
+#: data/slate.metainfo.xml.in:82
 msgid "Remove unecessary containers for the headerbar"
 msgstr "Eliminar contenedores innecesarios para la barra de encabezado"
 
-#: data/slate.metainfo.xml.in:71
+#: data/slate.metainfo.xml.in:83
 msgid "Remove xdg-documents sandbox permission"
 msgstr "Eliminar permiso de arena xdg-documents"
 
-#: data/slate.metainfo.xml.in:78
+#: data/slate.metainfo.xml.in:90
 msgid "Initial release!"
 msgstr "¡Versión inicial!"
+
+#~ msgid "\"Dumb as rocks text editor\""
+#~ msgstr "Editor de texto «tonto como una piedra»"
+
+#~ msgid "A \"dumb as rocks\" text editor"
+#~ msgstr "Un editor de texto «tonto como una piedra»"
