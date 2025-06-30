@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=Slate
-Comment="Dumb as rocks text editor"
+Comment=Edit text
 Exec=io.github.wpkelso.slate %U
 Icon=io.github.wpkelso.slate
-Keywords=Text;Editor;"Text Editor";
+Keywords=Text;Editor;Text Editor;
 Terminal=false
 Type=Application
 StartupNotify=true

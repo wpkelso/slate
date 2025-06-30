@@ -7,10 +7,10 @@
   <project_license>GPL-3.0</project_license>
 
   <name>Slate</name>
-  <summary>A "dumb as rocks" text editor</summary>
+  <summary>The text editor that's dumb as rocks!</summary>
   <description>
     <p>
-        Slate is a lightweight plain text editor that edits text files and nothing more.
+        Slate is a simple, lightweight plain text editor.
     </p>
     <ul>
       <li>Make new files!</li>
@@ -61,6 +61,18 @@
   </developer>
 
   <releases>
+    <release version="1.1.0" date="2025-06-30" urgency="medium">
+      <p>Smoothing rough edges and removing sharp points</p>
+      <ul>
+        <li>Added German, French, and Spanish translations</li>
+        <li>Added keyboard accelerators for actions</li>
+        <li>Unsaved documents are now kept until explicitly cleared, and re-opened when the application is launched</li>
+        <li>File location is now shown when hovering the headerbar</li>
+        <li>Restricted attempts to open documents to only valid text files</li>
+        <li>Added plaintext mimetype to desktop file</li>
+      </ul>
+    </release>
+
     <release version="1.0.1" date="2025-05-08" urgency="medium">
       <description>
         <p>Various small fixes for AppCenter release</p>
