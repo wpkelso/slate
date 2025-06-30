@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-29 22:43+0200\n"
+"POT-Creation-Date: 2025-06-29 22:47+0200\n"
 "PO-Revision-Date: 2025-06-09 HO:MI+ZONE\n"
 "Last-Translator: Teamcons - teamcons.carrd.co\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,25 +17,21 @@ msgid "Slate"
 msgstr "Slate"
 
 #: data/io.github.wpkelso.slate.desktop.in:4
-#, fuzzy
 msgid "Edit text"
-msgstr "Dateien bearbeiten!"
+msgstr "Dateien bearbeiten"
 
 #: data/io.github.wpkelso.slate.desktop.in:7
-#, fuzzy
 msgid "Text;Editor;Text Editor;"
-msgstr "Text;Editor; \"Text Editor\";"
+msgstr "Text;Editor;Text-Editor;"
 
 #: data/slate.metainfo.xml.in:10
 msgid "The text editor that's dumb as rocks!"
-msgstr ""
+msgstr "Der Texteditor, der so dumm ist wie ein Stein!"
 
 #: data/slate.metainfo.xml.in:12
-#, fuzzy
 msgid "Slate is a simple, lightweight plain text editor."
 msgstr ""
-"Slate ist ein leichtgewichtiger einfacher Texteditor, mit dem sich "
-"Textdateien bearbeiten lassen, mehr nicht."
+"Slate ist ein einfacher und leichtgewichtiger Texteditor."
 
 #: data/slate.metainfo.xml.in:16
 msgid "Make new files!"
