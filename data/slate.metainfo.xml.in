@@ -61,6 +61,12 @@
   </developer>
 
   <releases>
+    <release version="1.1.1" date="2025-06-30" urgency="medium">
+      <description>
+        <p>Fixes small issues for AppCenter release</p>
+      </description>
+    </release>
+
     <release version="1.1.0" date="2025-06-30" urgency="medium">
       <description>
         <p>Smoothing rough edges and removing sharp points</p>
