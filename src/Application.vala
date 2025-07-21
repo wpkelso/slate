@@ -10,7 +10,6 @@ public class Application : Gtk.Application {
 
     public static uint created_documents = 1;
     public static string data_dir_path = Environment.get_user_data_dir () + "/slate";
-    public bool newdocument = false;
 
     public Application () {
         Object (
