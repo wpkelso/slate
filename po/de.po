@@ -17,9 +17,9 @@ msgid "New Document"
 msgstr "Neues Dokument"
 
 #: src/Window.vala:32
-msgid "Open file"
-msgstr "Öffnen"
+msgid "Open file…"
+msgstr "Öffnen…"
 
 #: src/Window.vala:38
-msgid "Save as"
-msgstr "Speichern unter"
+msgid "Save as…"
+msgstr "Speichern unter…"
