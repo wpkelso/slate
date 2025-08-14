@@ -159,7 +159,6 @@ public class AppWindow : Gtk.Window {
         var save_dialog = new Gtk.FileDialog () {
             default_filter = text_files_filter,
             filters = filter_model,
-            modal = true,
             title = _("Save as"),
             initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
         };
