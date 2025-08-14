@@ -142,7 +142,25 @@ public class AppWindow : Gtk.Window {
         File oldfile = this.file;
         bool is_unsaved_doc = (Application.data_dir_path in this.file.get_path ());
 
+        var all_files_filter = new Gtk.FileFilter () {
+            name = _("All files"),
+        };
+        all_files_filter.add_pattern ("*");
+
+        var text_files_filter = new Gtk.FileFilter () {
+            name = _("Text files"),
+        };
+        text_files_filter.add_mime_type ("text/plain");
+
+        var filter_model = new ListStore (typeof (Gtk.FileFilter));
+        filter_model.append (all_files_filter);
+        filter_model.append (text_files_filter);
+
         var save_dialog = new Gtk.FileDialog () {
+            default_filter = text_files_filter,
+            filters = filter_model,
+            modal = true,
+            title = _("Save as"),
             initial_name = (is_unsaved_doc ? file_name + ".txt" : file_name)
         };
 
