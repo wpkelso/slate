@@ -146,8 +146,8 @@ public class Application : Gtk.Application {
             var window = get_windows ().first ().data;
             var error_dialog = new
                 Granite.MessageDialog.with_image_from_icon_name (
-                        "Couldn't open file",
-                        "The specified file is not a valid text file",
+                        _("Couldn't open file"),
+                        _("The specified file is not a valid text file"),
                         "dialog-error"
                         ) {
                     transient_for = window
