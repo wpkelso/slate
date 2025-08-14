@@ -213,7 +213,7 @@ public class AppWindow : Gtk.Window {
         if (value.type () == typeof (Gdk.FileList)) {
             var list = (Gdk.FileList)value;
             File[] file_array = {};
-            
+
             foreach (unowned var file in list.get_files ()) {
                 file_array += file;
             }
