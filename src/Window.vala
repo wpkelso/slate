@@ -29,13 +29,13 @@ public class AppWindow : Gtk.Window {
             action_name = "app.open-document",
             tooltip_markup = Granite.markup_accel_tooltip (
                     {"<Control>o"},
-                    _("Open file")
+                    _("Open file…")
             )
         };
         var save_as_button = new Gtk.Button.from_icon_name ("document-save-as") {
             tooltip_markup = Granite.markup_accel_tooltip (
                     {"<Control><Shift>s"},
-                    _("Save as")
+                    _("Save as…")
             )
         };
 
