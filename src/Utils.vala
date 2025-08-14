@@ -48,7 +48,6 @@
 
         } catch (Error err) {
             warning ("Failed to get file information: %s", err.message);
-            return false;
         }
 
         return false;

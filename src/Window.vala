@@ -89,10 +89,6 @@ public class AppWindow : Gtk.Window {
         save_as_button.clicked.connect (on_save_as);
         this.close_request.connect (on_close);
         buf.changed.connect (on_buffer_changed);
-
-        var drop_target = new Gtk.DropTarget (typeof (Gdk.FileList), Gdk.DragAction.COPY);
-        text_view.add_controller (drop_target);
-        drop_target.drop.connect (on_dropped);
     }
 
 
@@ -206,21 +202,6 @@ public class AppWindow : Gtk.Window {
             save_file ();
         }
 
-        return false;
-    }
-
-    public bool on_dropped (Gtk.DropTarget target, GLib.Value value, double x, double y) {
-        if (value.type () == typeof (Gdk.FileList)) {
-            var list = (Gdk.FileList)value;
-            File[] file_array = {};
-            
-            foreach (unowned var file in list.get_files ()) {
-                file_array += file;
-            }
-
-            application.open (file_array, "");
-            return true;
-        }
         return false;
     }
 }
