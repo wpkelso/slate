@@ -147,7 +147,7 @@ public class Application : Gtk.Application {
             var error_dialog = new
                 Granite.MessageDialog.with_image_from_icon_name (
                         _("Couldn't open file"),
-                        _("The specified file is not a valid text file"),
+                        _("The specified file is not a valid text file, or Slate could not access it"),
                         "dialog-error"
                         ) {
                     transient_for = window
@@ -168,7 +168,26 @@ public class Application : Gtk.Application {
     }
 
     public void on_open_document () {
-        var open_dialog = new Gtk.FileDialog ();
+        var all_files_filter = new Gtk.FileFilter () {
+            name = _("All files"),
+        };
+        all_files_filter.add_pattern ("*");
+
+        var text_files_filter = new Gtk.FileFilter () {
+            name = _("Text files"),
+        };
+        text_files_filter.add_mime_type ("text/plain");
+
+        var filter_model = new ListStore (typeof (Gtk.FileFilter));
+        filter_model.append (all_files_filter);
+        filter_model.append (text_files_filter);
+
+        var open_dialog = new Gtk.FileDialog () {
+            default_filter = text_files_filter,
+            filters = filter_model,
+            title = _("Open"),
+        };
+
         open_dialog.open.begin (this.active_window, null, (obj, res) => {
             try {
                 var file = open_dialog.open.end (res);
