@@ -61,16 +61,24 @@
   </developer>
 
   <releases>
+    <release version="1.1.1" date="2025-06-30" urgency="medium">
+      <description>
+        <p>Fixes small issues for AppCenter release</p>
+      </description>
+    </release>
+
     <release version="1.1.0" date="2025-06-30" urgency="medium">
-      <p>Smoothing rough edges and removing sharp points</p>
-      <ul>
-        <li>Added German, French, and Spanish translations</li>
-        <li>Added keyboard accelerators for actions</li>
-        <li>Unsaved documents are now kept until explicitly cleared, and re-opened when the application is launched</li>
-        <li>File location is now shown when hovering the headerbar</li>
-        <li>Restricted attempts to open documents to only valid text files</li>
-        <li>Added plaintext mimetype to desktop file</li>
-      </ul>
+      <description>
+        <p>Smoothing rough edges and removing sharp points</p>
+        <ul>
+          <li>Added German, French, and Spanish translations</li>
+          <li>Added keyboard accelerators for actions</li>
+          <li>Unsaved documents are now kept until explicitly cleared, and re-opened when the application is launched</li>
+          <li>File location is now shown when hovering the headerbar</li>
+          <li>Restricted attempts to open documents to only valid text files</li>
+          <li>Added plaintext mimetype to desktop file</li>
+        </ul>
+      </description>
     </release>
 
     <release version="1.0.1" date="2025-05-08" urgency="medium">

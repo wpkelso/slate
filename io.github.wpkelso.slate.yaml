@@ -12,6 +12,8 @@ finish-args:
     - --socket=wayland
     # GPU acceleration if needed
     - --device=dri
+    # Access files dropped from documents
+    - --filesystem=xdg-documents
 
 modules:
     - name: slate
