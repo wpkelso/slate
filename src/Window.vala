@@ -40,7 +40,7 @@ public class AppWindow : Gtk.Window {
         };
 
         // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
-        var actions_box = new Gtk.Box (HORIZONTAL, 8);
+        var actions_box = new Granite.Box (HORIZONTAL, HALF);
         actions_box.append (new_button);
         actions_box.append (open_button);
         actions_box.append (save_as_button);
