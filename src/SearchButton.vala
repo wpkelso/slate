@@ -116,37 +116,43 @@ public class SearchButton : Gtk.Box {
     }
 
     private void search_text (bool? forward = true) {
-        print ("\nSearch start");
-
-        Gtk.TextIter start_selection, end_selection;
-        buffer.get_selection_bounds (out start_selection, out end_selection);
-
-        print ("\nbounds start");
 
         Gtk.TextIter start_buffer, end_buffer;
         buffer.get_bounds (out start_buffer, out end_buffer);
 
-        Gtk.TextIter match_start, match_end;
-        bool found_match;
-        var text = entry_search.text;
+        // Selection_bounds can leave the variables untouched, which can lead to a crash
+        Gtk.TextIter start_selection = start_buffer.copy ();
+        Gtk.TextIter end_selection = start_buffer.copy ();
+        buffer.get_selection_bounds (out start_selection, out end_selection);
+
+        Gtk.TextIter match_start = start_selection.copy ();
+        Gtk.TextIter match_end = end_selection.copy ();
+        bool found_match = false;
 
         if (forward) {
-            print ("\nfw");
-                found_match = end_selection.forward_search (text, flags,
-                out match_start, out match_end, null);
+
+            //We have to check quick n' dirty behorehand because forward/backward_search prefers to crash the app than return false
+            var remaining_text = buffer.get_slice (end_selection, end_buffer, true);
+            if (entry_search.text in remaining_text) {
+                found_match = end_selection.forward_search (entry_search.text, flags,
+                 out match_start, out match_end, end_buffer);
+            }
 
         } else {
-
-            print ("\nbackward");
-               found_match = start_selection.backward_search (text, flags,
-                    out match_start, out match_end, null);
-
+            var remaining_text = buffer.get_slice (start_buffer, start_selection, true);
+            if (entry_search.text in remaining_text) {
+                found_match = start_selection.backward_search (entry_search.text, flags,
+                    out match_start, out match_end, start_buffer);
+            }
         }
-            print ("\nFound: " + found_match.to_string () + " at? " + match_start.get_offset ().to_string ());
 
+        print ("\nFound: " + found_match.to_string () + " at? " + match_start.get_offset ().to_string ());
         if (found_match) {
             buffer.select_range (match_start, match_end);
             textview.scroll_to_iter (match_start, 0, false, 0.5f, 0.5f);
+            entry_search.remove_css_class (Granite.STYLE_CLASS_ERROR);
+        } else {
+            entry_search.add_css_class (Granite.STYLE_CLASS_ERROR);
         }
 
     }
