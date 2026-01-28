@@ -72,7 +72,7 @@ public class Application : Gtk.Application {
                 return;
             }
 
-            window.search.active = !window.search.active;
+            window.search.search_menu.activate ();
         });
 
         SimpleAction quit_action = new SimpleAction ("quit", null);

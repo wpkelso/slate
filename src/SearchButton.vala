@@ -5,17 +5,13 @@
 
 public class SearchButton : Gtk.Box {
 
+    public Gtk.MenuButton search_menu;
     Gtk.Entry entry_search;
-    Gtk.ToggleButton toggle_search;
     Gtk.ToggleButton toggle_match;
     Gtk.Button previous;
     Gtk.Button next;
+    public Gtk.TextView textview {get; construct;}
     public Gtk.TextBuffer buffer {get; construct;}
-
-    public bool active {
-        get {return toggle_search.active;}
-        set {toggle_search.active = value;}
-    }
 
     Gtk.TextSearchFlags flags {
         get {
@@ -29,15 +25,18 @@ public class SearchButton : Gtk.Box {
         }
     }
 
-    public SearchButton (Gtk.TextBuffer buffer) {
-        Object (buffer: buffer);
+    public SearchButton (Gtk.TextView textview) {
+        Object (
+            textview: textview,
+            buffer: textview.buffer
+        );
     }
 
     construct {
         orientation = Gtk.Orientation.HORIZONTAL;
-        spacing = 3;
+        spacing = 0;
 
-        toggle_search = new Gtk.ToggleButton () {
+        search_menu = new Gtk.MenuButton () {
             icon_name = "system-search",
             tooltip_markup = Granite.markup_accel_tooltip (
                     {"<Control>f"},
@@ -45,7 +44,12 @@ public class SearchButton : Gtk.Box {
             )
         };
 
-        var search_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+        var search_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+            margin_start = 10,
+            margin_end = 10,
+            margin_top = 10,
+            margin_bottom = 10
+        };
         search_box.add_css_class (Granite.STYLE_CLASS_LINKED);
 
         entry_search = new Gtk.Entry () {
@@ -53,8 +57,8 @@ public class SearchButton : Gtk.Box {
             secondary_icon_tooltip_text = _("Clear text"),
         };
 
-        previous = new Gtk.Button.from_icon_name ("go-down-symbolic");
-        next = new Gtk.Button.from_icon_name ("go-up-symbolic");
+        previous = new Gtk.Button.from_icon_name ("go-up-symbolic");
+        next = new Gtk.Button.from_icon_name ("go-down-symbolic");
         toggle_match = new Gtk.ToggleButton () {
             icon_name = "font-select-symbolic",
             tooltip_text = _("Match case")
@@ -65,28 +69,27 @@ public class SearchButton : Gtk.Box {
         search_box.append (next);
         search_box.append (toggle_match);
 
-        var revealer_search = new Gtk.Revealer () {
-            child = search_box,
-            transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT
+
+        var popover = new Gtk.Popover () {
+            child = search_box
         };
 
-        append (revealer_search);
-        append (toggle_search);
+        search_menu.popover = popover;
+        append (search_menu);
 
 
         /* ---------------- CONNECTS AND BINDS ---------------- */
-        toggle_search.bind_property ("active",
-            revealer_search, "reveal-child",
-            GLib.BindingFlags.SYNC_CREATE);
+
 
         entry_search.changed.connect (on_entry_changed);
-        entry_search.changed.connect (() => {search_text ();});
         entry_search.icon_release.connect (on_clear_clicked);
 
         previous.clicked.connect (() => {search_text (false);});
         next.clicked.connect (() => {search_text (true);});
+        entry_search.activate.connect (() => {search_text (true);});
 
-        revealer_search.notify["reveal-child"].connect (() => {entry_search.grab_focus ();});
+
+        popover.show.connect (() => {entry_search.grab_focus ();});
     }
 
     private void on_entry_changed () {
@@ -103,23 +106,37 @@ public class SearchButton : Gtk.Box {
     }
 
     private void search_text (bool? forward = true) {
+        print ("\nSearch start");
+
         Gtk.TextIter start_selection, end_selection;
         buffer.get_selection_bounds (out start_selection, out end_selection);
+
+        print ("\nbounds start");
 
         Gtk.TextIter start_buffer, end_buffer;
         buffer.get_bounds (out start_buffer, out end_buffer);
 
         Gtk.TextIter match_start, match_end;
         bool found_match;
+        var text = entry_search.text;
 
         if (forward) {
-            found_match = end_selection.forward_search (entry_search.text, flags,
-                out match_start, out match_end, start_buffer);
+                    print ("\nfw");
+            found_match = end_selection.forward_search (text, flags,
+                out match_start, out match_end, null);
         } else {
-            found_match = start_selection.backward_search (entry_search.text, flags,
-                out match_start, out match_end, end_buffer);
+
+        print ("\nbackward");
+            found_match = start_selection.backward_search (text, flags,
+                out match_start, out match_end, null);
         }
 
-        buffer.select_range (match_start, match_end);
+            print ("\nFound: " + found_match.to_string () + " at? " + match_start.get_offset ().to_string ());
+
+        if (found_match) {
+            buffer.select_range (match_start, match_end);
+            textview.scroll_to_iter (match_start, 0, false, 0.5f, 0.5f);
+        }
+
     }
 }
