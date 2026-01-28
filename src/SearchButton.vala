@@ -57,8 +57,14 @@ public class SearchButton : Gtk.Box {
             secondary_icon_tooltip_text = _("Clear text"),
         };
 
-        previous = new Gtk.Button.from_icon_name ("go-up-symbolic");
-        next = new Gtk.Button.from_icon_name ("go-down-symbolic");
+        previous = new Gtk.Button.from_icon_name ("go-up-symbolic") {
+            tooltip_text = _("Search for an earlier match")
+        };
+
+        next = new Gtk.Button.from_icon_name ("go-down-symbolic") {
+            tooltip_text = _("Search for a later match")
+        };
+
         toggle_match = new Gtk.ToggleButton () {
             icon_name = "font-select-symbolic",
             tooltip_text = _("Match case")
