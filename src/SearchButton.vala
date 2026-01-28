@@ -52,6 +52,7 @@ public class SearchButton : Gtk.Box {
         entry_search = new Gtk.Entry () {
             placeholder_text = _("Enter search term"),
             secondary_icon_tooltip_text = _("Clear text"),
+            primary_icon_name = "system-search-symbolic"
         };
 
         previous = new Gtk.Button.from_icon_name ("go-up-symbolic") {
