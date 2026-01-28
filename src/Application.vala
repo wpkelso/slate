@@ -63,6 +63,18 @@ public class Application : Gtk.Application {
             window.on_save_as ();
         });
 
+        SimpleAction toggle_search_action = new SimpleAction ("search", null);
+        set_accels_for_action ("app.search", {"<Control>f"});
+        add_action (toggle_search_action);
+        toggle_search_action.activate.connect (() => {
+            unowned var window = this.get_active_window () as AppWindow;
+            if (window == null) {
+                return;
+            }
+
+            window.search.active = !window.search.active;
+        });
+
         SimpleAction quit_action = new SimpleAction ("quit", null);
         set_accels_for_action ("app.quit", {"<Control>q"});
         add_action (quit_action);

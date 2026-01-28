@@ -7,6 +7,7 @@ public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
     private Gtk.HeaderBar header;
+    public SearchButton search;
     public string file_name { get; set; }
 
     // Add a debounce so we aren't writing the entire buffer every character input
@@ -65,6 +66,8 @@ public class AppWindow : Gtk.Window {
         buf = text_view.buffer;
         buf.text = "";
 
+        search = new SearchButton (buf);
+        header.pack_end (search);
 
         var scrolled_view = new Gtk.ScrolledWindow () {
             child = text_view,
