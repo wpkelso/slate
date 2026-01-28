@@ -10,18 +10,20 @@ public class SearchButton : Gtk.Box {
     Gtk.ToggleButton toggle_match;
     Gtk.Button previous;
     Gtk.Button next;
+    Gtk.Revealer revealer_not_found;
     public Gtk.TextView textview {get; construct;}
     public Gtk.TextBuffer buffer {get; construct;}
 
     Gtk.TextSearchFlags flags {
         get {
             if (toggle_match.active) {
-                return Gtk.TextSearchFlags.TEXT_ONLY;
+                return Gtk.TextSearchFlags.VISIBLE_ONLY;
+            } else {
+                return Gtk.TextSearchFlags.CASE_INSENSITIVE;
             }
-            return Gtk.TextSearchFlags.CASE_INSENSITIVE;
         }
         set {
-            toggle_match.active = (value == Gtk.TextSearchFlags.TEXT_ONLY);
+            toggle_match.active = (value == Gtk.TextSearchFlags.VISIBLE_ONLY);
         }
     }
 
@@ -44,12 +46,7 @@ public class SearchButton : Gtk.Box {
             )
         };
 
-        var search_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
-            margin_start = 10,
-            margin_end = 10,
-            margin_top = 10,
-            margin_bottom = 10
-        };
+        var search_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
         search_box.add_css_class (Granite.STYLE_CLASS_LINKED);
 
         entry_search = new Gtk.Entry () {
@@ -75,9 +72,27 @@ public class SearchButton : Gtk.Box {
         search_box.append (next);
         search_box.append (toggle_match);
 
+        var label_not_found = new Gtk.Label (_("Search term could not be found"));
+        label_not_found.add_css_class (Granite.STYLE_CLASS_ERROR);
+
+        revealer_not_found = new Gtk.Revealer () {
+            child = label_not_found,
+            transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN,
+            reveal_child = false
+        };
+
+        var popover_box = new Gtk.Box (VERTICAL, 5) {
+            margin_start = 10,
+            margin_end = 10,
+            margin_top = 10,
+            margin_bottom = 5
+        };
+
+        popover_box.append (search_box);
+        popover_box.append (revealer_not_found);
 
         var popover = new Gtk.Popover () {
-            child = search_box
+            child = popover_box
         };
 
         search_menu.popover = popover;
@@ -116,32 +131,49 @@ public class SearchButton : Gtk.Box {
     }
 
     private void search_text (bool? forward = true) {
+        if (entry_search.text == "") {
+            return;
+        };
 
         Gtk.TextIter start_buffer, end_buffer;
         buffer.get_bounds (out start_buffer, out end_buffer);
 
         // Selection_bounds can leave the variables untouched, which can lead to a crash
-        Gtk.TextIter start_selection = start_buffer.copy ();
-        Gtk.TextIter end_selection = start_buffer.copy ();
+        Gtk.TextIter start_selection = start_buffer;
+        Gtk.TextIter end_selection = start_buffer;
         buffer.get_selection_bounds (out start_selection, out end_selection);
 
-        Gtk.TextIter match_start = start_selection.copy ();
-        Gtk.TextIter match_end = end_selection.copy ();
+        Gtk.TextIter match_start = start_selection;
+        Gtk.TextIter match_end = end_selection;
         bool found_match = false;
 
         if (forward) {
 
-            //We have to check quick n' dirty behorehand because forward/backward_search prefers to crash the app than return false
+            //We have to check quick n' dirty beforehand because forward/backward_search prefers to crash the app than return false
+            //Also we have to account checking depending on case sensitiveness
+            //TODO: Fix this workaround
             var remaining_text = buffer.get_slice (end_selection, end_buffer, true);
-            if (entry_search.text in remaining_text) {
-                found_match = end_selection.forward_search (entry_search.text, flags,
+            var text = entry_search.text;
+            if (flags == Gtk.TextSearchFlags.CASE_INSENSITIVE) {
+                text = text.casefold ();
+                remaining_text = remaining_text.casefold ();
+            }
+
+            if (text in remaining_text) {
+                found_match = end_selection.forward_search (text, flags,
                  out match_start, out match_end, end_buffer);
             }
 
         } else {
             var remaining_text = buffer.get_slice (start_buffer, start_selection, true);
-            if (entry_search.text in remaining_text) {
-                found_match = start_selection.backward_search (entry_search.text, flags,
+            var text = entry_search.text;
+            if (flags == Gtk.TextSearchFlags.CASE_INSENSITIVE) {
+                text = text.casefold ();
+                remaining_text = remaining_text.casefold ();
+            }
+
+            if (text in remaining_text) {
+                found_match = start_selection.backward_search (text, flags,
                     out match_start, out match_end, start_buffer);
             }
         }
@@ -150,9 +182,10 @@ public class SearchButton : Gtk.Box {
         if (found_match) {
             buffer.select_range (match_start, match_end);
             textview.scroll_to_iter (match_start, 0, false, 0.5f, 0.5f);
-            entry_search.remove_css_class (Granite.STYLE_CLASS_ERROR);
+
+            revealer_not_found.reveal_child = false;
         } else {
-            entry_search.add_css_class (Granite.STYLE_CLASS_ERROR);
+            revealer_not_found.reveal_child = true;
         }
 
     }
