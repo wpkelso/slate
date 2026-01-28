@@ -88,8 +88,12 @@ public class SearchButton : Gtk.Box {
         next.clicked.connect (() => {search_text (true);});
         entry_search.activate.connect (() => {search_text (true);});
 
-
         popover.show.connect (() => {entry_search.grab_focus ();});
+
+        var settings = new GLib.Settings ("io.github.wpkelso.slate");
+        settings.bind ("match-case",
+            toggle_match, "active",
+            GLib.SettingsBindFlags.DEFAULT);
     }
 
     private void on_entry_changed () {
@@ -121,16 +125,17 @@ public class SearchButton : Gtk.Box {
         var text = entry_search.text;
 
         if (forward) {
-                    print ("\nfw");
-            found_match = end_selection.forward_search (text, flags,
+            print ("\nfw");
+                found_match = end_selection.forward_search (text, flags,
                 out match_start, out match_end, null);
+
         } else {
 
-        print ("\nbackward");
-            found_match = start_selection.backward_search (text, flags,
-                out match_start, out match_end, null);
-        }
+            print ("\nbackward");
+               found_match = start_selection.backward_search (text, flags,
+                    out match_start, out match_end, null);
 
+        }
             print ("\nFound: " + found_match.to_string () + " at? " + match_start.get_offset ().to_string ());
 
         if (found_match) {

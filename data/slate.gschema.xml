@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/io/github/wpkelso/slate/" id="io.github.wpkelso.slate">
+    <key name="match-case" type="b">
+      <default>false</default>
+      <summary>Whether to match case in search</summary>
+      <description>Used by the search function to remember whether the user wanted to match case</description>
+    </key>
+  </schema>
+</schemalist>
