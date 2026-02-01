@@ -86,6 +86,8 @@ public class AppWindow : Gtk.Window {
 
         open_file (file);
 
+        text_view.grab_focus ();
+
         debug ("Connecting signals");
         // Signal callbacks are heavily derived from similar operations in
         // elementary/code

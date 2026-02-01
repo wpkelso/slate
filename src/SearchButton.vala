@@ -101,8 +101,6 @@ public class SearchButton : Gtk.Box {
 
 
         /* ---------------- CONNECTS AND BINDS ---------------- */
-
-
         entry_search.changed.connect (on_entry_changed);
         entry_search.icon_release.connect (on_clear_clicked);
 
@@ -150,6 +148,14 @@ public class SearchButton : Gtk.Box {
 
         if (forward) {
 
+            // If the cursor is at the end (like on app start or when the user is typing), we may want to search from the start
+            // Gated by Forward so the user can still go backward from the end if they want to
+            if (end_buffer.is_cursor_position ()) {
+                buffer.place_cursor (start_buffer);
+                start_selection = start_buffer;
+                end_selection = start_buffer;
+            }
+
             //We have to check quick n' dirty beforehand because forward/backward_search prefers to crash the app than return false
             //Also we have to account checking depending on case sensitiveness
             //TODO: Fix this workaround
@@ -166,6 +172,10 @@ public class SearchButton : Gtk.Box {
             }
 
         } else {
+
+            //We have to check quick n' dirty beforehand because forward/backward_search prefers to crash the app than return false
+            //Also we have to account checking depending on case sensitiveness
+            //TODO: Fix this workaround
             var remaining_text = buffer.get_slice (start_buffer, start_selection, true);
             var text = entry_search.text;
             if (flags == Gtk.TextSearchFlags.CASE_INSENSITIVE) {
