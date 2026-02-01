@@ -14,10 +14,6 @@ public class SearchButton : Granite.Bin {
     Gtk.Button next;
     Gtk.Revealer revealer_not_found;
 
-    // Add a debounce for search
-    static int interval = 500; // ms
-    static uint debounce_timer_id = 0;
-
     Gtk.TextSearchFlags flags {
         get {
             if (toggle_match.active) {
@@ -49,16 +45,25 @@ public class SearchButton : Granite.Bin {
 
         entry_search = new Gtk.Entry () {
             placeholder_text = _("Enter search term"),
-            secondary_icon_tooltip_text = _("Clear text"),
-            primary_icon_name = "system-search-symbolic"
+            primary_icon_name = "system-search-symbolic",
+            secondary_icon_tooltip_markup = Granite.markup_accel_tooltip (
+                    {"<Control>l"},
+                    _("Clear text")
+            )
         };
 
         previous = new Gtk.Button.from_icon_name ("go-up-symbolic") {
-            tooltip_text = _("Search for an earlier match")
+            tooltip_markup = Granite.markup_accel_tooltip (
+                    {"<Shift>Return"},
+                    _("Search for an earlier match")
+            )
         };
 
         next = new Gtk.Button.from_icon_name ("go-down-symbolic") {
-            tooltip_text = _("Search for a later match")
+            tooltip_markup = Granite.markup_accel_tooltip (
+                    {"Return"},
+                _("Search for a later match")
+            )
         };
 
         toggle_match = new Gtk.ToggleButton () {
@@ -97,10 +102,15 @@ public class SearchButton : Granite.Bin {
         search_menu.popover = popover;
         child = search_menu;
 
+        // We use a keypress controller to capture Shift+Enter
+        var keypress_controller = new Gtk.EventControllerKey ();
+        entry_search.add_controller (keypress_controller);
+
 
         /* ---------------- CONNECTS AND BINDS ---------------- */
+        keypress_controller.key_pressed.connect (on_key_press_event);
+
         entry_search.changed.connect (on_entry_changed);
-        entry_search.changed.connect (search_after_typing);
         entry_search.icon_release.connect (on_clear_clicked);
 
         previous.clicked.connect (() => {search_text (false);});
@@ -122,19 +132,6 @@ public class SearchButton : Granite.Bin {
         } else {
             entry_search.secondary_icon_name = "";
         }
-    }
-
-    public void search_after_typing () {
-        if (debounce_timer_id != 0) {
-            GLib.Source.remove (debounce_timer_id);
-        }
-
-        debounce_timer_id = Timeout.add (interval, () => {
-            debounce_timer_id = 0;
-            search_text (true);
-            return GLib.Source.REMOVE;
-        });
-
     }
 
     private void on_clear_clicked () {
@@ -163,7 +160,6 @@ public class SearchButton : Granite.Bin {
             // If the cursor is at the end (like on app start or when the user is typing), we may want to search from the start
             // Gated by Forward so the user can still go backward from the end if they want to
             if (start_selection.is_end ()) {
-                print ("\nTHIS IS END: " + buffer.cursor_position.to_string ());
                 buffer.place_cursor (start_buffer);
                 start_selection = start_buffer;
                 end_selection = start_buffer;
@@ -185,9 +181,6 @@ public class SearchButton : Granite.Bin {
             }
 
         } else {
-
-            print ("go backward");
-
             //We have to check quick n' dirty beforehand because forward/backward_search prefers to crash the app than return false
             //Also we have to account checking depending on case sensitiveness
             //TODO: Fix this workaround
@@ -216,6 +209,17 @@ public class SearchButton : Granite.Bin {
         } else {
             revealer_not_found.reveal_child = true;
         }
+    }
 
+    public bool on_key_press_event (uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (keyval == Gdk.Key.Return && state == Gdk.ModifierType.SHIFT_MASK) {
+            search_text (false);
+        }
+
+        if (keyval == Gdk.Key.l && state == Gdk.ModifierType.CONTROL_MASK) {
+            on_clear_clicked ();
+        }
+
+        return Gdk.EVENT_PROPAGATE;
     }
 }
