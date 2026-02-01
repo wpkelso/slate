@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2025 William Kelso <wpkelso@posteo.net>
  */
 
-public class SearchButton : Gtk.Box {
+public class SearchButton : Granite.Bin {
     public Gtk.TextView textview {get; construct;}
     public Gtk.TextBuffer buffer {get; construct;}
 
@@ -39,9 +39,6 @@ public class SearchButton : Gtk.Box {
     }
 
     construct {
-        orientation = Gtk.Orientation.HORIZONTAL;
-        spacing = 0;
-
         search_menu = new Gtk.MenuButton () {
             icon_name = "system-search",
             tooltip_markup = Granite.markup_accel_tooltip (
@@ -101,7 +98,7 @@ public class SearchButton : Gtk.Box {
         };
 
         search_menu.popover = popover;
-        append (search_menu);
+        child = search_menu;
 
 
         /* ---------------- CONNECTS AND BINDS ---------------- */
