@@ -4,6 +4,8 @@
  */
 
 public class SearchButton : Gtk.Box {
+    public Gtk.TextView textview {get; construct;}
+    public Gtk.TextBuffer buffer {get; construct;}
 
     public Gtk.MenuButton search_menu;
     Gtk.Entry entry_search;
@@ -11,8 +13,10 @@ public class SearchButton : Gtk.Box {
     Gtk.Button previous;
     Gtk.Button next;
     Gtk.Revealer revealer_not_found;
-    public Gtk.TextView textview {get; construct;}
-    public Gtk.TextBuffer buffer {get; construct;}
+
+    // Add a debounce for search
+    static int interval = 500; // ms
+    static uint debounce_timer_id = 0;
 
     Gtk.TextSearchFlags flags {
         get {
@@ -102,6 +106,7 @@ public class SearchButton : Gtk.Box {
 
         /* ---------------- CONNECTS AND BINDS ---------------- */
         entry_search.changed.connect (on_entry_changed);
+        entry_search.changed.connect (search_after_typing);
         entry_search.icon_release.connect (on_clear_clicked);
 
         previous.clicked.connect (() => {search_text (false);});
@@ -123,6 +128,22 @@ public class SearchButton : Gtk.Box {
         } else {
             entry_search.secondary_icon_name = "";
         }
+    }
+
+
+    public void search_after_typing () {
+        debug ("The buffer has been modified, starting the debounce timer");
+
+        if (debounce_timer_id != 0) {
+            GLib.Source.remove (debounce_timer_id);
+        }
+
+        debounce_timer_id = Timeout.add (interval, () => {
+            debounce_timer_id = 0;
+            search_text (true);
+            return GLib.Source.REMOVE;
+        });
+
     }
 
     private void on_clear_clicked () {
@@ -150,7 +171,8 @@ public class SearchButton : Gtk.Box {
 
             // If the cursor is at the end (like on app start or when the user is typing), we may want to search from the start
             // Gated by Forward so the user can still go backward from the end if they want to
-            if (end_buffer.is_cursor_position ()) {
+            if (start_selection.is_end ()) {
+                print ("\nTHIS IS END: " + buffer.cursor_position.to_string ());
                 buffer.place_cursor (start_buffer);
                 start_selection = start_buffer;
                 end_selection = start_buffer;
@@ -173,6 +195,8 @@ public class SearchButton : Gtk.Box {
 
         } else {
 
+            print ("go backward");
+
             //We have to check quick n' dirty beforehand because forward/backward_search prefers to crash the app than return false
             //Also we have to account checking depending on case sensitiveness
             //TODO: Fix this workaround
@@ -189,7 +213,10 @@ public class SearchButton : Gtk.Box {
             }
         }
 
-        print ("\nFound: " + found_match.to_string () + " at? " + match_start.get_offset ().to_string ());
+        debug ("Cursor: " + buffer.cursor_position.to_string ());
+        debug ("Start and end selection: " + start_selection.get_offset ().to_string () + "|" + end_selection.get_offset ().to_string ());
+        debug ("Found: " + found_match.to_string () + " at? " + match_start.get_offset ().to_string () + "|" + match_end.get_offset ().to_string ());
+
         if (found_match) {
             buffer.select_range (match_start, match_end);
             textview.scroll_to_iter (match_start, 0, false, 0.5f, 0.5f);
