@@ -22,9 +22,8 @@ public class SearchButton : Granite.Bin {
         get {
             if (toggle_match.active) {
                 return Gtk.TextSearchFlags.VISIBLE_ONLY;
-            } else {
-                return Gtk.TextSearchFlags.CASE_INSENSITIVE;
             }
+            return Gtk.TextSearchFlags.CASE_INSENSITIVE;
         }
         set {
             toggle_match.active = (value == Gtk.TextSearchFlags.VISIBLE_ONLY);
@@ -32,10 +31,8 @@ public class SearchButton : Granite.Bin {
     }
 
     public SearchButton (Gtk.TextView textview) {
-        Object (
-            textview: textview,
-            buffer: textview.buffer
-        );
+        Object (textview: textview,
+                buffer: textview.buffer);
     }
 
     construct {
@@ -127,10 +124,7 @@ public class SearchButton : Granite.Bin {
         }
     }
 
-
     public void search_after_typing () {
-        debug ("The buffer has been modified, starting the debounce timer");
-
         if (debounce_timer_id != 0) {
             GLib.Source.remove (debounce_timer_id);
         }
@@ -217,8 +211,8 @@ public class SearchButton : Granite.Bin {
         if (found_match) {
             buffer.select_range (match_start, match_end);
             textview.scroll_to_iter (match_start, 0, false, 0.5f, 0.5f);
-
             revealer_not_found.reveal_child = false;
+
         } else {
             revealer_not_found.reveal_child = true;
         }
