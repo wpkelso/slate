@@ -67,7 +67,10 @@ public class AppWindow : Gtk.Window {
         buf.text = "";
 
         search = new SearchButton (text_view);
-        header.pack_end (search);
+
+        var toolbar_box = new Gtk.Box (HORIZONTAL, 8);
+        toolbar_box.append (search);
+        header.pack_end (toolbar_box);
 
         var scrolled_view = new Gtk.ScrolledWindow () {
             child = text_view,
