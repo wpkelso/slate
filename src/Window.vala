@@ -65,6 +65,9 @@ public class AppWindow : Gtk.Window {
         buf = text_view.buffer;
         buf.text = "";
 
+        // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
+        var toolbar_box = new Gtk.Box (HORIZONTAL, 8);
+        header.pack_end (toolbar_box);
 
         var scrolled_view = new Gtk.ScrolledWindow () {
             child = text_view,
