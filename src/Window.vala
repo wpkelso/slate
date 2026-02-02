@@ -67,7 +67,7 @@ public class AppWindow : Gtk.Window {
 
         // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
         var toolbar_box = new Gtk.Box (HORIZONTAL, 8);
-        
+
         toolbar_box.append (new UndoRedoButtons (buf));
 
         header.pack_end (toolbar_box);
