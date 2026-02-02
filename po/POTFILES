@@ -1,3 +1,4 @@
 src/Application.vala
 src/Window.vala
 src/Utils.vala
+src/CutCopyPasteButtons.vala
