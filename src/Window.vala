@@ -66,10 +66,12 @@ public class AppWindow : Gtk.Window {
         buf = text_view.buffer;
         buf.text = "";
 
-        search = new SearchButton (text_view);
-
+        // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
         var toolbar_box = new Gtk.Box (HORIZONTAL, 8);
+
+        search = new SearchButton (text_view);
         toolbar_box.append (search);
+
         header.pack_end (toolbar_box);
 
         var scrolled_view = new Gtk.ScrolledWindow () {
