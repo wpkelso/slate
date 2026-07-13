@@ -81,8 +81,8 @@ public class AppWindow : Gtk.Window {
         };
 
         child = scrolled_view;
-        default_height = 400;
-        default_width = 300;
+        default_height = 600;
+        default_width = 600;
         titlebar = header;
 
         debug ("Binding window title to file_name");
