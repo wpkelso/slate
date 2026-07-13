@@ -24,3 +24,9 @@ install_data(
     rename: meson.project_name() + '.metainfo.xml',
     install_dir: join_paths(get_option('datadir'), 'metainfo'),
 )
+
+install_data(
+    'slate.gschema.xml',
+    install_dir: get_option('datadir') / 'glib-2.0' / 'schemas',
+    rename: meson.project_name() + '.gschema.xml'
+)
