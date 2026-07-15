@@ -7,6 +7,7 @@ public class AppWindow : Gtk.Window {
     public File file { get; set; }
     private Gtk.TextBuffer buf;
     private Gtk.HeaderBar header;
+    public SearchButton search;
     public string file_name { get; set; }
 
     // Add a debounce so we aren't writing the entire buffer every character input
@@ -67,6 +68,10 @@ public class AppWindow : Gtk.Window {
 
         // TODO: use Granite.Box (HORIZONTAL, HALF) when granite-7.7.0 is released
         var toolbar_box = new Gtk.Box (HORIZONTAL, 8);
+
+        search = new SearchButton (text_view);
+        toolbar_box.append (search);
+
         header.pack_end (toolbar_box);
 
         var scrolled_view = new Gtk.ScrolledWindow () {
@@ -85,6 +90,8 @@ public class AppWindow : Gtk.Window {
         debug ("Success!");
 
         open_file (file);
+
+        text_view.grab_focus ();
 
         debug ("Connecting signals");
         // Signal callbacks are heavily derived from similar operations in
