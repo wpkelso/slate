@@ -8,9 +8,13 @@
 
   <name>Slate</name>
   <summary>The text editor that's dumb as rocks!</summary>
+  <summary xml:lang="uk">Текстовий редактор, простий як двері!</summary>
   <description>
     <p>
         Slate is a simple, lightweight plain text editor.
+    </p>
+    <p xml:lang="uk">
+        Простіший редактор тексту.
     </p>
     <ul>
       <li>Make new files!</li>
@@ -19,6 +23,14 @@
       <li>Files get autosaved!</li>
       <li>Save files under new names!</li>
       <li>Close files!</li>
+    </ul>
+    <ul xml:lang="uk">
+      <li>Створення файлів</li>
+      <li>Відкриття файлів</li>
+      <li>Редагування файлів</li>
+      <li>Самозбереження файлів</li>
+      <li>Збереження файлів під новими іменами</li>
+      <li>Закриття файлів</li>
     </ul>
   </description>
 
@@ -58,6 +70,7 @@
 
   <developer id="io.github.wpkelso">
     <name>William Kelso</name>
+    <name xml:lang="uk">Вільям Келсо</name>
   </developer>
 
   <releases>
